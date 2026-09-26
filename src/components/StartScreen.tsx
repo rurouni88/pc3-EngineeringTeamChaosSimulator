@@ -4,10 +4,10 @@ import { RngEngine } from '../engine/seeded-rng';
 import { ACHIEVEMENTS, loadUnlocked } from '../engine/achievements';
 import { MetaStore } from '../engine/meta';
 import { ChaosBoard } from './ChaosBoard';
-import { Leaderboard } from './Leaderboard';
 import { AchievementModal } from './AchievementModal';
 import { HelpModal } from './HelpModal';
 import { OptionsModal } from './OptionsModal';
+import { LeaderboardModal } from './LeaderboardModal';
 import { RoleSelector } from './RoleSelector';
 
 
@@ -25,8 +25,8 @@ export function StartScreen({
 }) {
   const [seed, setSeed] = useState<string>(() => RngEngine.generateSeed());
   const [editing, setEditing] = useState(false);
-  const [activeModal, setActiveModal] = useState<'achievements' | 'help' | 'options' | null>(null);
-  const unlocked = loadUnlocked();
+  const [activeModal, setActiveModal] = useState<'achievements' | 'help' | 'options' | 'leaderboard' | null>(null);
+
 
   const start = (role: Role) => {
     if (SEED_RE.test(seed)) RngEngine.seedWith(seed);
@@ -93,12 +93,18 @@ export function StartScreen({
       <RoleSelector onStart={(role) => start(role)} />
 
       {/* Modal buttons */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap justify-center">
         <button
           onClick={() => setActiveModal('achievements')}
           className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-slate-400 text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
         >
           🏅 Achievements
+        </button>
+        <button
+          onClick={() => setActiveModal('leaderboard')}
+          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-slate-400 text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
+        >
+          🏆 Leaderboard
         </button>
         <button
           onClick={() => setActiveModal('help')}
@@ -114,31 +120,16 @@ export function StartScreen({
         </button>
       </div>
 
-      <Leaderboard />
-
       <div className="flex flex-col items-center gap-1">
-        <div className="text-[10px] text-slate-500 font-mono">
-          🏅 {unlocked.length}/{ACHIEVEMENTS.length} achievements
-        </div>
-        {unlocked.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-1 max-w-lg">
-            {unlocked.map((id) => {
-              const a = ACHIEVEMENTS.find((achievement) => achievement.id === id);
-              return a ? (
-                <span key={id} title={`${a.title} — ${a.desc}`} className="text-sm cursor-help">
-                  {a.emoji}
-                </span>
-              ) : null;
-            })}
-          </div>
-        )}
         <p className="text-[10px] sm:text-xs text-slate-600 text-center">
           Lose: stability hits 0, or the budget dies. Win: survive day 30 with 50%+ stability.
         </p>
+        <div className="text-[9px] text-slate-700 mt-2">Copyright 2026 PC3 Enterprises</div>
       </div>
 
       {/* Modals */}
       {activeModal === 'achievements' && <AchievementModal onClose={() => setActiveModal(null)} />}
+      {activeModal === 'leaderboard' && <LeaderboardModal onClose={() => setActiveModal(null)} />}
       {activeModal === 'help' && <HelpModal onClose={() => setActiveModal(null)} />}
       {activeModal === 'options' && <OptionsModal onClose={() => setActiveModal(null)} onResetMeta={() => {
         MetaStore.save({ totalRuns: 0, wins: 0, losses: 0, bestStability: 0, lastRunDate: '', topRuns: [] });
