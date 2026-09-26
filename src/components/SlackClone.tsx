@@ -36,7 +36,7 @@ export function SlackClone({ state }: { state: GameState }) {
       <div className="flex items-center gap-2 mb-2">
         <div className="w-5 h-5 rounded bg-indigo-600 flex items-center justify-center text-[10px] text-white font-bold">T</div>
         <h2 className="text-sm font-bold text-indigo-400">Microsoft Teams</h2>
-        <span className="text-[10px] text-slate-600 ml-auto">🔔 47 unread</span>
+        <span className="text-[10px] text-muted ml-auto">🔔 47 unread</span>
       </div>
 
       {/* Channel selector */}
@@ -48,7 +48,7 @@ export function SlackClone({ state }: { state: GameState }) {
             className={`px-2 py-1 rounded text-[10px] border flex-shrink-0 ${
               channel === c
                 ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300'
-                : 'border-theme text-muted hover:border-slate-600'
+                : 'border-theme text-muted hover:border-theme'
             }`}
           >
             {c}
@@ -61,17 +61,17 @@ export function SlackClone({ state }: { state: GameState }) {
         {msgs.slice(-60).map((m) => (
           <div key={m.id}>
             <div className="flex items-center gap-1.5">
-              <span className={`font-bold ${TEAM_COLOR[m.channel] ?? 'text-slate-300'}`}>
+              <span className={`font-bold ${TEAM_COLOR[m.channel] ?? 'text-secondary'}`}>
                 @{m.author}
               </span>
-              <span className="text-slate-600 text-[9px]">{m.channel} · d{m.day}</span>
-              <span className="text-slate-700 text-[8px]">✓✓</span>
+              <span className="text-muted text-[9px]">{m.channel} · d{m.day}</span>
+              <span className="text-muted text-[8px]">✓✓</span>
             </div>
-            <div className="text-slate-300 ml-0 mt-0.5">{m.text}</div>
+            <div className="text-secondary ml-0 mt-0.5">{m.text}</div>
           </div>
         ))}
         {msgs.length === 0 && (
-          <div className="text-slate-600 text-center mt-8">no messages</div>
+          <div className="text-muted text-center mt-8">no messages</div>
         )}
         <div ref={bottomRef} />
       </div>
@@ -84,13 +84,13 @@ export function SlackClone({ state }: { state: GameState }) {
             {avgBurnout}%
           </span>
         </div>
-        <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+        <div className="w-full bg-tertiary h-2 rounded-full overflow-hidden">
           <div
             className={`h-full bg-rose-500 transition-all duration-700 ${avgBurnout > 60 ? 'animate-pulse' : ''}`}
             style={{ width: `${avgBurnout}%` }}
           />
         </div>
-        <div className="text-[9px] text-slate-700 mt-1 text-center">
+        <div className="text-[9px] text-muted mt-1 text-center">
           You have a new message · You have a new message · You have a new message
         </div>
       </div>

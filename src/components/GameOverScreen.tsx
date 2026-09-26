@@ -34,7 +34,7 @@ export function GameOverScreen({
     <div className="h-dvh overflow-y-auto flex flex-col items-center justify-center gap-4 sm:gap-6 p-4 sm:p-8 text-center">
       <h1 className={`text-4xl font-bold ${o.color}`}>{o.title}</h1>
       <p className="text-secondary max-w-lg text-sm">{o.msg}</p>
-      <div className="flex gap-8 text-sm text-slate-300">
+      <div className="flex gap-8 text-sm text-secondary">
         <div>
           <div className="text-2xl font-bold">{Math.min(state.day, 30)}</div>
           <div className="text-xs text-muted">days survived</div>
@@ -58,7 +58,7 @@ export function GameOverScreen({
             🏅 New achievements
           </div>
           {newAchievements.map((a) => (
-            <div key={a.id} className="text-sm text-slate-200">
+            <div key={a.id} className="text-sm text-primary">
               {a.emoji} <span className="font-bold">{a.title}</span>
               <div className="text-[10px] text-muted">{a.desc}</div>
             </div>

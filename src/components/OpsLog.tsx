@@ -15,7 +15,7 @@ export function OpsLog({ state }: { state: GameState }) {
       <div className="space-y-0.5 text-[11px]">
         {state.log.slice(0, 5).map((l, i) => (
           <div key={i} className={KIND_STYLE[l.kind]}>
-            <span className="text-slate-600">d{l.day}</span> {l.text}
+            <span className="text-muted">d{l.day}</span> {l.text}
           </div>
         ))}
       </div>

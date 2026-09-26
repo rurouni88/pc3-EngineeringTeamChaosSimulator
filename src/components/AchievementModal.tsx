@@ -8,14 +8,14 @@ export function AchievementModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
       <div
-        className="w-full max-w-lg bg-secondary border border-slate-700 rounded-xl p-4 max-h-[80vh] overflow-y-auto"
+        className="w-full max-w-lg bg-secondary border border-theme rounded-xl p-4 max-h-[80vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-bold text-amber-400 tracking-widest">🏅 ACHIEVEMENTS</h2>
           <button
             onClick={onClose}
-            className="text-muted hover:text-slate-300 text-lg"
+            className="text-muted hover:text-secondary text-lg"
           >
             ✕
           </button>
@@ -40,7 +40,7 @@ export function AchievementModal({ onClose }: { onClose: () => void }) {
                 <div className="flex items-center gap-2">
                   <span className="text-lg">{isUnlocked ? a.emoji : '🔒'}</span>
                   <div>
-                    <div className={`font-bold ${isUnlocked ? 'text-slate-100' : 'text-muted'}`}>
+                    <div className={`font-bold ${isUnlocked ? 'text-primary' : 'text-muted'}`}>
                       {a.title}
                     </div>
                     <div className="text-[10px] text-muted">{a.desc}</div>

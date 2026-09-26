@@ -13,7 +13,7 @@ function Bar({ label, value, color }: { label: string; value: number; color: str
   return (
     <div className="flex items-center gap-2 text-xs">
       <span className="w-24 text-secondary">{label}</span>
-      <div className="w-28 bg-slate-800 h-2 rounded-full overflow-hidden">
+      <div className="w-28 bg-tertiary h-2 rounded-full overflow-hidden">
         <div className={`h-full ${color} transition-all duration-500`} style={{ width: `${value}%` }} />
       </div>
       <span className="w-8 text-right">{value}%</span>
@@ -32,7 +32,7 @@ export function StatusBar({ state, onAction, paused, onTogglePause }: Props) {
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-3 py-2 border-b border-theme bg-secondary/80 text-sm">
       <div className="font-black text-cyan-400 tracking-widest font-display">ETCS</div>
       <div className="text-secondary">
-        Day <span className="text-slate-100">{Math.min(state.day, 30)}</span>/30 · {clock}
+        Day <span className="text-primary">{Math.min(state.day, 30)}</span>/30 · {clock}
       </div>
       <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-xs border border-indigo-500/30">
         {state.role}
@@ -58,7 +58,7 @@ export function StatusBar({ state, onAction, paused, onTogglePause }: Props) {
         <span className="text-xs text-secondary">AP</span>
         <div className="flex gap-1">
           {[0, 1, 2].map((i) => (
-            <span key={i} className={`w-2.5 h-2.5 rounded-full ${i < state.ap ? 'bg-emerald-400' : 'bg-slate-700'}`} />
+            <span key={i} className={`w-2.5 h-2.5 rounded-full ${i < state.ap ? 'bg-emerald-400' : 'bg-tertiary'}`} />
           ))}
         </div>
       </div>
@@ -101,7 +101,7 @@ export function StatusBar({ state, onAction, paused, onTogglePause }: Props) {
         className={`px-3 py-1 rounded text-xs font-bold border ${
           paused
             ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300 hover:bg-emerald-500/30'
-            : 'bg-slate-500/20 border-slate-500/50 text-slate-300 hover:bg-slate-500/30'
+            : 'bg-tertiary/20 border-theme/50 text-secondary hover:bg-tertiary/30'
         }`}
       >
         {paused ? '▶ RESUME' : '⏸ PAUSE'}

@@ -31,7 +31,7 @@ export function ChaosBoardLive({ state }: { state: GameState }) {
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 rounded bg-orange-500 flex items-center justify-center text-[10px] text-white font-bold">G</div>
           <span className="text-sm font-bold text-orange-400">Grafana</span>
-          <span className="text-[9px] text-slate-600">dashboard: etcs-production</span>
+          <span className="text-[9px] text-muted">dashboard: etcs-production</span>
         </div>
         <span className={`text-[9px] px-1.5 py-0.5 rounded ${
           stab >= 60 ? 'bg-emerald-500/20 text-emerald-400' :
@@ -50,11 +50,11 @@ export function ChaosBoardLive({ state }: { state: GameState }) {
             className={`rounded border px-2 py-1.5 transition-all duration-300 ${
               m.health < 30
                 ? 'border-rose-500/50 bg-rose-500/10'
-                : 'border-slate-700 bg-slate-800/50'
+                : 'border-theme bg-secondary/50'
             }`}
           >
             <div className="flex items-center justify-between mb-0.5">
-              <span className="text-slate-300 font-bold text-[10px]">{m.name}</span>
+              <span className="text-secondary font-bold text-[10px]">{m.name}</span>
               <span className={`text-[9px] ${
                 m.health < 30 ? 'text-rose-400' : 'text-muted'
               }`}>
@@ -80,7 +80,7 @@ export function ChaosBoardLive({ state }: { state: GameState }) {
       </div>
 
       {/* Footer */}
-      <div className="mt-2 pt-2 border-t border-slate-700 flex items-center justify-between text-[9px] text-slate-600">
+      <div className="mt-2 pt-2 border-t border-theme flex items-center justify-between text-[9px] text-muted">
         <span>refresh: 5s · last check: now</span>
         <span>Day {state.day}/30 · ${state.budget}k</span>
       </div>

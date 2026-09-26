@@ -57,7 +57,7 @@ function TicketCard({
           {key}
         </span>
         <div className="flex-1 min-w-0">
-          <div className="font-bold text-slate-100 truncate">{ticket.title}</div>
+          <div className="font-bold text-primary truncate">{ticket.title}</div>
           <div className="text-[10px] text-muted truncate">
             {module?.name} · spec {ticket.specClarity}% · due d{ticket.deadline}
             {overdue && <span className="text-rose-400 font-bold ml-1">OVERDUE</span>}
@@ -66,7 +66,7 @@ function TicketCard({
       </div>
 
       {/* Progress bar */}
-      <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+      <div className="w-full bg-tertiary h-2 rounded-full overflow-hidden">
         <div
           className="h-full bg-indigo-500 transition-all duration-500"
           style={{ width: `${pct}%` }}
@@ -94,7 +94,7 @@ function TicketCard({
               actions.assign(s, ticket.id, ev.target.value ? Number(ev.target.value) : null),
             )
           }
-          className="bg-secondary border border-slate-700 rounded text-[10px] px-2 py-1.5 flex-1 min-w-[120px]"
+          className="bg-secondary border border-theme rounded text-[10px] px-2 py-1.5 flex-1 min-w-[120px]"
         >
           <option value="">— unassigned —</option>
           {state.engineers.map((e) => (
@@ -152,7 +152,7 @@ export function JiraBoard({ state, selected, onAction }: Props) {
       <div className="flex items-center gap-2 mb-3">
         <div className="w-5 h-5 rounded bg-blue-600 flex items-center justify-center text-[10px] text-white font-bold">J</div>
         <h2 className="text-sm font-bold text-blue-400">JIRA</h2>
-        <span className="text-[9px] text-slate-600 ml-auto">Sprint 4 · 30 days left</span>
+        <span className="text-[9px] text-muted ml-auto">Sprint 4 · 30 days left</span>
       </div>
 
       <div className="text-[10px] text-muted mb-3">
@@ -169,7 +169,7 @@ export function JiraBoard({ state, selected, onAction }: Props) {
               <div className={`text-[10px] font-bold mb-2 ${stage.color} flex items-center gap-1.5`}>
                 <span>{stage.emoji}</span>
                 <span>{stage.label}</span>
-                <span className="text-slate-600">({tickets.length})</span>
+                <span className="text-muted">({tickets.length})</span>
               </div>
               <div className="space-y-2">
                 {tickets.map((t) => (

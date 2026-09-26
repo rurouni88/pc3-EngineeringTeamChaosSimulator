@@ -31,7 +31,7 @@ function MiniBar({ label, value, color }: { label: string; value: number; color:
   return (
     <div className="flex items-center gap-2">
       <span className="text-[9px] text-muted w-8">{label}</span>
-      <div className="flex-1 bg-slate-800 h-1.5 rounded-full overflow-hidden">
+      <div className="flex-1 bg-tertiary h-1.5 rounded-full overflow-hidden">
         <div
           className={`h-full ${color} transition-all duration-500`}
           style={{ width: `${value}%` }}
@@ -63,13 +63,13 @@ export function EngineerRoster({ state, selected, onSelect, onAction }: Props) {
               className={`cursor-pointer rounded-lg border p-3 text-xs transition-colors ${
                 isSel
                   ? 'border-pink-500 bg-pink-500/10'
-                  : 'border-theme bg-primary/50 hover:border-slate-600'
+                  : 'border-theme bg-primary/50 hover:border-theme'
               }`}
             >
               <div className="flex items-center gap-2">
                 <span className="text-lg">{arch.emoji}</span>
                 <div className="flex-1 min-w-0">
-                  <div className="font-bold text-slate-100">{e.name}</div>
+                  <div className="font-bold text-primary">{e.name}</div>
                   <div className="text-[10px] text-muted">{arch.name}</div>
                 </div>
                 <span className={`text-xs ${STATUS_STYLE[e.status]}`}>

@@ -19,7 +19,7 @@ export function RoleCard({ role, onStart }: { role: RoleInfo; onStart: () => voi
         className="group flex flex-col items-center gap-3 min-h-[120px] p-5 rounded-xl border border-theme bg-secondary/80 hover:border-cyan-500/50 hover:bg-cyan-500/5 transition-all duration-200 w-full"
       >
         <span className="text-4xl">{role.emoji}</span>
-        <span className="text-base font-bold text-slate-200 group-hover:text-cyan-300 transition-colors">
+        <span className="text-base font-bold text-primary group-hover:text-cyan-300 transition-colors">
           {role.title}
         </span>
         <span className="text-xs text-muted group-hover:text-secondary transition-colors text-center">

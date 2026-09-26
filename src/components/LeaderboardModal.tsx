@@ -13,7 +13,7 @@ export function LeaderboardModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
       <div
-        className="bg-secondary border border-slate-700 rounded-xl p-4 w-full max-w-lg max-h-[80vh] overflow-y-auto"
+        className="bg-secondary border border-theme rounded-xl p-4 w-full max-w-lg max-h-[80vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -21,7 +21,7 @@ export function LeaderboardModal({ onClose }: { onClose: () => void }) {
           <h2 className="text-lg font-bold text-amber-400">🏆 Best Quarters</h2>
           <button
             onClick={onClose}
-            className="text-muted hover:text-slate-300 text-xl"
+            className="text-muted hover:text-secondary text-xl"
           >
             ✕
           </button>
@@ -32,7 +32,7 @@ export function LeaderboardModal({ onClose }: { onClose: () => void }) {
           <div className="text-center text-muted py-8">
             <div className="text-3xl mb-2">📊</div>
             <div className="text-sm">No quarters played yet</div>
-            <div className="text-xs text-slate-600 mt-1">Start a game to see your best runs</div>
+            <div className="text-xs text-muted mt-1">Start a game to see your best runs</div>
           </div>
         ) : (
           <div className="space-y-4">
@@ -40,11 +40,11 @@ export function LeaderboardModal({ onClose }: { onClose: () => void }) {
               const top = runs.filter((r) => r.role === role).slice(0, 3);
               return (
                 <div key={role} className="bg-primary/50 border border-theme rounded-lg p-3">
-                  <div className="text-sm text-slate-300 font-bold mb-2">
+                  <div className="text-sm text-secondary font-bold mb-2">
                     {ROLE_EMOJI[role]} {role === 'PO' ? 'Product Owner' : role === 'EM' ? 'Eng Manager' : 'CIO'}
                   </div>
                   {top.length === 0 ? (
-                    <div className="text-[10px] text-slate-600">no quarters yet</div>
+                    <div className="text-[10px] text-muted">no quarters yet</div>
                   ) : (
                     <div className="space-y-1.5">
                       {top.map((r, i) => (
@@ -55,9 +55,9 @@ export function LeaderboardModal({ onClose }: { onClose: () => void }) {
                             </span>
                             {' · '}D{r.day}
                             {' · '}
-                            <span className="text-slate-300">{Math.round(r.stability)}% stab</span>
+                            <span className="text-secondary">{Math.round(r.stability)}% stab</span>
                           </span>
-                          <span className="text-slate-600">
+                          <span className="text-muted">
                             {r.shipped}🚀 · {r.seed ? r.seed.slice(0, 6) : '—'}
                           </span>
                         </div>

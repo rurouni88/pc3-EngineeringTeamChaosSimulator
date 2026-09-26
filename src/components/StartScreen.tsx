@@ -110,7 +110,7 @@ export function StartScreen({
         <button
           onClick={() => setSeed(RngEngine.generateSeed())}
           title="Generate new seed"
-          className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 hover:border-cyan-500/60"
+          className="px-1.5 py-0.5 rounded bg-tertiary border border-theme hover:border-cyan-500/60"
         >
           🎲
         </button>
@@ -130,35 +130,35 @@ export function StartScreen({
       <div className="flex gap-2 flex-wrap justify-center">
         <button
           onClick={() => setActiveModal('achievements')}
-          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-secondary text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
+          className="px-2.5 py-1 rounded bg-tertiary border border-theme text-secondary text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
         >
           🏅 Achievements
         </button>
         <button
           onClick={() => setActiveModal('leaderboard')}
-          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-secondary text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
+          className="px-2.5 py-1 rounded bg-tertiary border border-theme text-secondary text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
         >
           🏆 Leaderboard
         </button>
         <button
           onClick={() => setActiveModal('help')}
-          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-secondary text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
+          className="px-2.5 py-1 rounded bg-tertiary border border-theme text-secondary text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
         >
           📖 Help
         </button>
         <button
           onClick={() => setActiveModal('options')}
-          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-secondary text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
+          className="px-2.5 py-1 rounded bg-tertiary border border-theme text-secondary text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
         >
           ⚙️ Options
         </button>
       </div>
 
       <div className="flex flex-col items-center gap-1">
-        <p className="text-[10px] sm:text-xs text-slate-600 text-center">
+        <p className="text-[10px] sm:text-xs text-muted text-center">
           Lose: stability hits 0, or the budget dies. Win: survive day 30 with 50%+ stability.
         </p>
-        <div className="text-[9px] text-slate-700 mt-2">Copyright 2026 PC3 Enterprises</div>
+        <div className="text-[9px] text-muted mt-2">Copyright 2026 PC3 Enterprises</div>
       </div>
 
       {/* Modals */}

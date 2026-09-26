@@ -20,18 +20,18 @@ export function Leaderboard() {
           const top = runs.filter((r) => r.role === role).slice(0, 3);
           return (
             <div key={role} className="bg-secondary/60 border border-theme rounded-lg p-2">
-              <div className="text-xs text-slate-300 font-bold mb-1">
+              <div className="text-xs text-secondary font-bold mb-1">
                 {ROLE_EMOJI[role]} {role}
               </div>
               {top.length === 0 ? (
-                <div className="text-[10px] text-slate-600">no quarters yet</div>
+                <div className="text-[10px] text-muted">no quarters yet</div>
               ) : (
                 top.map((r, i) => (
                   <div key={i} className="flex justify-between text-[10px] text-secondary">
                     <span>
                       {r.won ? '✓' : '✗'} D{r.day} · {Math.round(r.stability)}%
                     </span>
-                    <span className="text-slate-600">
+                    <span className="text-muted">
                       {r.shipped}🚀 {r.seed ? r.seed.slice(0, 6) : '—'}
                     </span>
                   </div>

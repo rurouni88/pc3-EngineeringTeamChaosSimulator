@@ -42,13 +42,13 @@ export function OptionsModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
       <div
-        className="w-full max-w-sm bg-secondary border border-slate-700 rounded-xl p-4"
+        className="w-full max-w-sm bg-secondary border border-theme rounded-xl p-4"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-bold text-secondary tracking-widest">⚙️ OPTIONS</h2>
-          <button onClick={onClose} className="text-muted hover:text-slate-300 text-lg">✕</button>
+          <button onClick={onClose} className="text-muted hover:text-secondary text-lg">✕</button>
         </div>
 
         {/* Tabs */}
@@ -60,7 +60,7 @@ export function OptionsModal({
               className={`flex-1 px-2 py-1.5 rounded-lg text-xs border ${
                 activeTab === t.id
                   ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300'
-                  : 'border-theme text-muted hover:border-slate-600'
+                  : 'border-theme text-muted hover:border-theme'
               }`}
             >
               {t.icon} {t.label}
@@ -73,11 +73,11 @@ export function OptionsModal({
           <div className="space-y-2">
             <button
               onClick={() => setShowSettings(true)}
-              className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-xs hover:border-indigo-500/50 hover:text-indigo-400 transition-colors text-left"
+              className="w-full px-3 py-2.5 rounded-lg bg-tertiary border border-theme text-secondary text-xs hover:border-indigo-500/50 hover:text-indigo-400 transition-colors text-left"
             >
               🎮 Game Settings (Dark Mode, Save Scum, Audio)
             </button>
-            <div className="text-[10px] text-slate-600 text-center py-2">
+            <div className="text-[10px] text-muted text-center py-2">
               Audio coming soon — your ears will thank you.
             </div>
           </div>
@@ -90,7 +90,7 @@ export function OptionsModal({
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div>
                 <span className="text-muted">Total Runs</span>
-                <div className="font-bold text-slate-100">{meta.totalRuns}</div>
+                <div className="font-bold text-primary">{meta.totalRuns}</div>
               </div>
               <div>
                 <span className="text-muted">Wins</span>

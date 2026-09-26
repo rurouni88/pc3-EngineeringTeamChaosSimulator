@@ -80,7 +80,7 @@ export function ChaosBoard() {
   const debtColor = (v: number) => (v >= 50 ? 'bg-rose-500' : v >= 30 ? 'bg-amber-500' : 'bg-emerald-500');
 
   return (
-    <div className="w-full max-w-md bg-secondary border border-slate-700 rounded-lg p-2 font-mono text-[10px] h-48 flex flex-col overflow-hidden">
+    <div className="w-full max-w-md bg-secondary border border-theme rounded-lg p-2 font-mono text-[10px] h-48 flex flex-col overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-1.5">
         <div className="flex items-center gap-1.5">
@@ -108,11 +108,11 @@ export function ChaosBoard() {
             className={`rounded border px-1.5 py-1 transition-all duration-300 ${
               phase === 'chaos' && m.health < 30
                 ? 'border-rose-500/50 bg-rose-500/10'
-                : 'border-slate-700 bg-slate-800/50'
+                : 'border-theme bg-secondary/50'
             }`}
           >
             <div className="flex items-center justify-between mb-0.5">
-              <span className="text-slate-300 font-bold">{m.name}</span>
+              <span className="text-secondary font-bold">{m.name}</span>
               <span className={`text-[9px] ${
                 phase === 'chaos' && m.health < 30 ? 'text-rose-400' : 'text-muted'
               }`}>
@@ -138,7 +138,7 @@ export function ChaosBoard() {
       </div>
 
       {/* Footer ticker */}
-      <div className="mt-1 pt-1 border-t border-slate-700 flex items-center justify-between">
+      <div className="mt-1 pt-1 border-t border-theme flex items-center justify-between">
         <div className="flex items-center gap-1">
           <span className="w-1 h-1 rounded-full bg-cyan-400 animate-pulse" />
           <span className="text-muted">tick {tick}</span>

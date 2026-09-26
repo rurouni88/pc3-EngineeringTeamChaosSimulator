@@ -91,7 +91,7 @@ export function Tooltip({
         <div
           id={id}
           role="tooltip"
-          className="fixed z-[100] px-2 py-1 bg-slate-800 border border-slate-600 text-slate-200 text-[10px] rounded shadow-lg pointer-events-none whitespace-nowrap"
+          className="fixed z-[100] px-2 py-1 bg-tertiary border border-theme text-primary text-[10px] rounded shadow-lg pointer-events-none whitespace-nowrap"
           style={{
             top,
             left,
