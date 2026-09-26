@@ -80,7 +80,7 @@ export function ChaosBoard() {
   const debtColor = (v: number) => (v >= 50 ? 'bg-rose-500' : v >= 30 ? 'bg-amber-500' : 'bg-emerald-500');
 
   return (
-    <div className="w-full max-w-md bg-slate-900 border border-slate-700 rounded-lg p-2 font-mono text-[10px] h-48 flex flex-col overflow-hidden">
+    <div className="w-full max-w-md bg-secondary border border-theme rounded-lg p-2 font-mono text-[10px] h-48 flex flex-col overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-1.5">
         <div className="flex items-center gap-1.5">
@@ -89,7 +89,7 @@ export function ChaosBoard() {
             <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
           </div>
-          <span className="text-slate-500">etcs — monitoring</span>
+          <span className="text-muted">etcs — monitoring</span>
         </div>
         <span className={`text-[9px] px-1 py-0.5 rounded ${
           phase === 'building' ? 'bg-cyan-500/20 text-cyan-400' :
@@ -108,25 +108,25 @@ export function ChaosBoard() {
             className={`rounded border px-1.5 py-1 transition-all duration-300 ${
               phase === 'chaos' && m.health < 30
                 ? 'border-rose-500/50 bg-rose-500/10'
-                : 'border-slate-700 bg-slate-800/50'
+                : 'border-theme bg-secondary/50'
             }`}
           >
             <div className="flex items-center justify-between mb-0.5">
-              <span className="text-slate-300 font-bold">{m.name}</span>
+              <span className="text-secondary font-bold">{m.name}</span>
               <span className={`text-[9px] ${
-                phase === 'chaos' && m.health < 30 ? 'text-rose-400' : 'text-slate-500'
+                phase === 'chaos' && m.health < 30 ? 'text-rose-400' : 'text-muted'
               }`}>
                 {Math.round(m.health)}%
               </span>
             </div>
             <div className="flex gap-1">
-              <div className="flex-1 bg-slate-950 h-1 rounded-full overflow-hidden">
+              <div className="flex-1 bg-primary h-1 rounded-full overflow-hidden">
                 <div
                   className={`h-full ${healthColor(m.health)} transition-all duration-300`}
                   style={{ width: `${m.health}%` }}
                 />
               </div>
-              <div className="flex-1 bg-slate-950 h-1 rounded-full overflow-hidden">
+              <div className="flex-1 bg-primary h-1 rounded-full overflow-hidden">
                 <div
                   className={`h-full ${debtColor(m.debt)} transition-all duration-300`}
                   style={{ width: `${m.debt}%` }}
@@ -138,12 +138,12 @@ export function ChaosBoard() {
       </div>
 
       {/* Footer ticker */}
-      <div className="mt-1 pt-1 border-t border-slate-700 flex items-center justify-between">
+      <div className="mt-1 pt-1 border-t border-theme flex items-center justify-between">
         <div className="flex items-center gap-1">
           <span className="w-1 h-1 rounded-full bg-cyan-400 animate-pulse" />
-          <span className="text-slate-500">tick {tick}</span>
+          <span className="text-muted">tick {tick}</span>
         </div>
-        <span className="text-slate-500">
+        <span className="text-muted">
           {Math.max(0, 30 - Math.floor(tick / 10))}d left
         </span>
       </div>

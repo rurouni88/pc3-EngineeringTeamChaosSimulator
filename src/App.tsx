@@ -11,24 +11,46 @@ import { ChaosBoardLive } from './components/ChaosBoardLive';
 import { ArchitectureGraph } from './components/ArchitectureGraph';
 import { EngineerRoster } from './components/EngineerRoster';
 import { JiraBoard } from './components/JiraBoard';
-import { SlackClone } from './components/SlackClone';
+import { TeamsClone } from './components/TeamsClone';
 import { OpsLog } from './components/OpsLog';
 import { StartScreen } from './components/StartScreen';
 import { GameOverScreen } from './components/GameOverScreen';
+import { ReorderableTabs } from './components/ReorderableTabs';
 
 type Tab = 'board' | 'team' | 'system' | 'slack';
 
-const TABS: { id: Tab; label: string }[] = [
-  { id: 'board', label: '🗂 Board' },
-  { id: 'team', label: '👥 Team' },
-  { id: 'system', label: '🏗 System' },
-  { id: 'slack', label: '💬 Slack' },
+const DEFAULT_TABS: { id: Tab; label: string }[] = [
+  { id: 'board', label: '🗂 JIRA' },
+  { id: 'team', label: '👥 Roster' },
+  { id: 'system', label: '📊 Grafana' },
+  { id: 'slack', label: '💬 Teams' },
 ];
+
+const TAB_ORDER_KEY = 'etcs_tab_order';
+
+function loadTabOrder(): Tab[] {
+  try {
+    const raw = localStorage.getItem(TAB_ORDER_KEY);
+    if (raw) return JSON.parse(raw) as Tab[];
+  } catch {
+    // ignore
+  }
+  return DEFAULT_TABS.map((t) => t.id);
+}
+
+function saveTabOrder(order: Tab[]): void {
+  try {
+    localStorage.setItem(TAB_ORDER_KEY, JSON.stringify(order));
+  } catch {
+    // ignore
+  }
+}
 
 export default function App() {
   const [state, setState] = useState<GameState | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
   const [paused, setPaused] = useState(false);
+  const [tabOrder, setTabOrder] = useState<Tab[]>(loadTabOrder);
   const [tab, setTab] = useState<Tab>('board');
   const [hasSave, setHasSave] = useState(() => SaveSystem.hasSave());
   const [newAchievements, setNewAchievements] = useState<Achievement[]>([]);
@@ -98,6 +120,11 @@ export default function App() {
     setTab('board');
   };
 
+  const handleReorder = (order: string[]) => {
+    setTabOrder(order as Tab[]);
+    saveTabOrder(order as Tab[]);
+  };
+
   const onAction = (fn: (s: GameState) => GameState) => {
     setState((cur) => (cur ? fn(cur) : cur));
   };
@@ -144,21 +171,12 @@ export default function App() {
 
       {/* MOBILE: one panel at a time, switched via tabs */}
       <div className="lg:hidden flex-1 min-h-0 flex flex-col">
-        <div className="flex gap-1 p-2">
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className={`flex-1 px-2 py-1.5 rounded-lg text-xs border ${
-                tab === t.id
-                  ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300'
-                  : 'border-slate-800 text-slate-500'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
+        <ReorderableTabs
+          tabs={tabOrder.map((id) => DEFAULT_TABS.find((t) => t.id === id)!)}
+          activeTab={tab}
+          onTabSelect={(id) => setTab(id as Tab)}
+          onReorder={handleReorder}
+        />
         <div className="flex-1 min-h-0 px-2 pb-2 flex flex-col">
           {tab === 'board' && (
             <>
@@ -175,7 +193,7 @@ export default function App() {
             />
           )}
           {tab === 'system' && <ChaosBoardLive state={state} />}
-          {tab === 'slack' && <SlackClone state={state} />}
+          {tab === 'slack' && <TeamsClone state={state} />}
         </div>
       </div>
 
@@ -195,7 +213,7 @@ export default function App() {
           <OpsLog state={state} />
         </div>
         <div className="col-span-3 min-h-0">
-          <SlackClone state={state} />
+          <TeamsClone state={state} />
         </div>
       </div>
     </div>

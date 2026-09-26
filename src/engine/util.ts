@@ -1,5 +1,5 @@
 import type { GameState } from './types';
-import { SLACK_CHANNELS } from './data';
+import { TEAM_CHANNELS } from './data';
 import { RngEngine } from './seeded-rng';
 
 export const clamp = (v: number, min: number, max: number) =>
@@ -37,17 +37,17 @@ export function log(
   if (state.log.length > 200) state.log.pop();
 }
 
-export function slack(
+export function teamMessage(
   state: GameState,
   channel: string,
   author: string,
   text: string,
 ) {
-  state.slack.push({ id: nextId(state), day: state.day, channel, author, text });
-  if (state.slack.length > 100) state.slack.shift();
+  state.teamMessages.push({ id: nextId(state), day: state.day, channel, author, text });
+  if (state.teamMessages.length > 100) state.teamMessages.shift();
 }
 
-export const randomChannel = () => pick(SLACK_CHANNELS);
+export const randomChannel = () => pick(TEAM_CHANNELS);
 
 /** System stability = average module health (0-100) */
 export function stability(state: GameState): number {

@@ -1,6 +1,6 @@
 import type { GameState } from './types';
-import { SLACK_PANIC } from './data';
-import { chance, clamp, log, pick, rand, slack, randomChannel } from './util';
+import { TEAM_PANIC } from './data';
+import { chance, clamp, log, pick, rand, teamMessage, randomChannel } from './util';
 
 /** A bug lands in a module. Severity 1-3. */
 export function spawnBug(
@@ -16,11 +16,11 @@ export function spawnBug(
   m.debt = clamp(m.debt + 3, 0, 100);
   log(state, `🐛 Bug in ${m.name} — health -${dmg}`, 'bad');
   if (chance(0.6)) {
-    slack(
+    teamMessage(
       state,
       '#incidents',
       author ?? 'oncall-bot',
-      pick(SLACK_PANIC),
+      pick(TEAM_PANIC),
     );
   }
 }
@@ -47,7 +47,7 @@ export function tickCodebase(state: GameState) {
         `💥 Cascading failure: ${m.name} is dragging down ${victim.name}`,
         'chaos',
       );
-      slack(
+      teamMessage(
         state,
         '#incidents',
         'oncall-bot',

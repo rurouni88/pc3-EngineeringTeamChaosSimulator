@@ -5,7 +5,7 @@
 > architecture, and try to stop the system from collapsing before the end of the quarter.
 
 ETCS is a real-time management sim where the gameplay *is* the corporate dashboard:
-a live Jira board, a simulated team Slack, and a system-architecture health map.
+a live Jira board, a simulated Microsoft Teams chat, and a Grafana-style system health monitor.
 Every second is one working hour. Every day ends with consequences.
 
 ## How to play
@@ -32,19 +32,20 @@ before they burn out, and mediate review wars the moment they start.
   when you switch tabs or close the page). A **▶ Continue** button appears on the
   title screen while a quarter is in flight.
 - **Leaderboard** — your best quarters per role are kept locally (result, day,
-  stability, tickets shipped, seed) and shown on the title screen.
+  stability, tickets shipped, seed) and shown in the Leaderboard modal.
 - **Achievements** — 10 satirical honors ("Layoff Season", "The Purple Button",…)
   unlock across quarters and accumulate in your browser.
+- **3 Themes** — Normal (default dark), Deep Dark, and Light mode. Set in Options → Settings.
 
 ## The mechanics
 
 - **12 engineer archetypes** — each with skill, ego, work rate, bug rate, and a
-  behavioral quirk, plus its own satirical git-commit and Slack-rant text pools.
+  behavioral quirk, plus its own satirical git-commit and Teams-rant text pools.
   When burnout exceeds 80, rants override everything.
 - **Ticket pipeline** — Backlog → In Progress → Review/QA → Production.
   QA pass odds depend on spec clarity and tech debt; failures send tickets back with a regression.
 - **⚔️ Code Review Trap** — a cowboy-type dev reviewing a perfectionist's merge request
-  ignites a Slack flame war. Both burnouts spike and the ticket stalls in limbo
+  ignites a Teams flame war. Both burnouts spike and the ticket stalls in limbo
   until someone mediates.
 - **🍝 Spaghetti Cascades** — pushing code into a high-tech-debt module can spawn
   hidden bugs in *adjacent* modules. Watch the health map in real time.
@@ -54,13 +55,15 @@ before they burn out, and mediate review wars the moment they start.
   takes forced leave. Managing the roster's rhythm is half the game.
 - **Random events** — breaking dependency releases, 3am on-call pages, compliance
   audits, hackathons, CEO tweets, competitor launches…
+- **🤖 AI Tools** — PO can generate specs, EM can auto-review code, CIO can hire AI engineers.
+  AI helps but creates new problems. Overreliance debuffs the team.
 - **Seeded RNG** — all randomness flows through a mulberry32 `RngEngine` (8-char
   alphanumeric seeds), so seeded quarters are fully reproducible. Unseeded runs
   fall back to `Math.random()`.
 
 ## Tech
 
-- [React 18](https://react.dev) + [TypeScript](https://www.typescriptlang.org) + [Vite](https://vite.dev)
+- [React 19](https://react.dev) + [TypeScript](https://www.typescriptlang.org) + [Vite 8](https://vite.dev)
 - [Tailwind CSS v4](https://tailwindcss.com) (via `@tailwindcss/vite`)
 - The simulation is **pure TypeScript with zero React dependencies** — the UI just renders
   whatever the engines produce, and the game tick is a pure function safe for `setState` updaters.
@@ -77,6 +80,7 @@ src/
 │   ├── CodebaseEngine.ts      # Bug spawning, debt drift, cascading failures
 │   ├── TicketEngine.ts        # Pipeline transitions + Code Review Trap
 │   ├── GameEngine.ts          # newGame, runGameTick, events, player actions
+│   ├── AiEngine.ts            # AI tools, actions, overreliance mechanic
 │   ├── seeded-rng.ts          # mulberry32 RngEngine + 8-char seeds
 │   ├── save.ts                # Autosave/load (validated, PRNG-aware)
 │   ├── meta.ts                # Cross-quarter run records (leaderboard data)
@@ -85,15 +89,22 @@ src/
 │   └── __tests__/engine.test.ts  # Vitest suite (24 tests)
 ├── components/                # React UI (the "corporate dashboard")
 │   ├── StatusBar.tsx          # Clock, AP, stability/debt bars, pause, role actions
-│   ├── ArchitectureGraph.tsx  # Module health map
-│   ├── JiraBoard.tsx          # 4-column board, click-to-assign
-│   ├── SlackClone.tsx         # Team chat feed + burnout meter
+│   ├── ChaosBoard.tsx         # Animated dashboard preview on title screen
+│   ├── ChaosBoardLive.tsx     # Live Grafana-style module health (mobile System tab)
+│   ├── JiraBoard.tsx          # Vertical ticket list grouped by stage
+│   ├── TeamsClone.tsx         # Microsoft Teams chat feed + burnout meter
 │   ├── EngineerRoster.tsx     # Minion cards with energy/morale/burnout
 │   ├── OpsLog.tsx             # Recent events
-│   ├── StartScreen.tsx        # Role select, seed input, continue, leaderboard
-│   ├── TitleTerminal.tsx      # Satirical typewriter terminal on the title screen
-│   ├── Leaderboard.tsx        # Best quarters per role
-│   └── GameOverScreen.tsx     # Outcome + stats + new achievements
+│   ├── StartScreen.tsx        # Role selector, seed input, continue, modals
+│   ├── RoleSelector.tsx       # Expandable role cards (PO/EM/CIO)
+│   ├── AchievementModal.tsx   # Unlocked/locked achievements
+│   ├── HelpModal.tsx          # How to play guide
+│   ├── OptionsModal.tsx       # Tabbed: Settings | Statistics | Reset
+│   ├── SettingsModal.tsx      # Theme (Normal/Dark/Light), Save Scum, Audio
+│   ├── LeaderboardModal.tsx   # Best quarters per role
+│   ├── GameOverScreen.tsx     # Outcome + stats + new achievements
+│   ├── ReorderableTabs.tsx    # Long-press drag-and-drop tab reordering (mobile)
+│   └── Tooltip.tsx            # Reusable tooltip component
 └── App.tsx                    # Game loop: 1s interval → runGameTick
 scripts/
 └── smoke.ts                   # Headless bot that plays full games (balance testing)
@@ -116,9 +127,9 @@ The build uses relative asset paths (`base: './'` in `vite.config.ts`), so `dist
 works at any subpath — including `https://<user>.github.io/<repo>/`.
 Two workflows run on every push/PR:
 
-- **CI** (`.github/workflows/ci.yml`) — installs deps, runs the Vitest suite,
+- **CI** (`.github/workflows/pr-checks.yml`) — installs deps, runs the Vitest suite,
   type-checks, and builds.
-- **Deploy** (`.github/workflows/deploy.yml`) — on `main`, builds and publishes
+- **Deploy** (`.github/workflows/deploy-pages.yml`) — on `main`, builds and publishes
   `dist/` to GitHub Pages. `public/_headers` sends `Cache-Control: no-cache` so
   a deploy always wins over browser caches.
 

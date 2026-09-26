@@ -1,6 +1,6 @@
 import type { GameState, Ticket, TicketType } from './types';
 import { TICKET_TEMPLATES } from './data';
-import { avgDebt, chance, clamp, log, moduleById, nextId, pick, rand, slack } from './util';
+import { avgDebt, chance, clamp, log, moduleById, nextId, pick, rand, teamMessage, shuffle } from './util';
 
 const COWBOYS = ['rockstar', 'framework', 'grindset'];
 const PERFECTIONISTS = ['zealot', 'architect', 'zen'];
@@ -29,14 +29,17 @@ function triggerReviewTrap(state: GameState, t: Ticket) {
     `⚔️ Code review war: ${reviewer.name} vs ${author.name} over "${t.title}"`,
     'chaos',
   );
-  slack(state, '#dev-team', reviewer.name, 'this PR is a crime against humanity. revert it.');
-  slack(state, '#dev-team', author.name, 'I will not touch a single line. it is correct.');
-  slack(state, '#dev-team', reviewer.name, 'I am putting my resignation in the PR description. metaphorically.');
+  teamMessage(state, '#dev-team', reviewer.name, 'this PR is a crime against humanity. revert it.');
+  teamMessage(state, '#dev-team', author.name, 'I will not touch a single line. it is correct.');
+  teamMessage(state, '#dev-team', reviewer.name, 'I am putting my resignation in the PR description. metaphorically.');
 }
 
 export function makeTicket(state: GameState, type?: TicketType): Ticket {
   const tType: TicketType = type ?? pick<TicketType>(['feature', 'bug', 'epic']);
-  const tpl = pick(TICKET_TEMPLATES[tType]);
+  const usedTitles = new Set(state.tickets.map((t) => t.title));
+  const available = TICKET_TEMPLATES[tType].filter((t) => !usedTitles.has(t.title));
+  const pool = available.length > 0 ? available : TICKET_TEMPLATES[tType];
+  const tpl = pick(shuffle(pool));
   return {
     id: nextId(state),
     title: tpl.title,
@@ -90,7 +93,7 @@ export function tickTickets(state: GameState) {
         `🚀 ${t.title} shipped (+${t.reward.stability} stability, +$${t.reward.revenue}k)`,
         'good',
       );
-      slack(state, '#announcements', 'deploy-bot', `🚀 ${t.title} is live in production`);
+      teamMessage(state, '#announcements', 'deploy-bot', `🚀 ${t.title} is live in production`);
       const eng = state.engineers.find((e) => e.assignedTicketId === t.id);
       if (eng) {
         eng.assignedTicketId = null;

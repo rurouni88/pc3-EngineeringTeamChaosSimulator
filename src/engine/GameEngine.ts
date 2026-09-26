@@ -3,7 +3,9 @@ import { ARCHETYPES, MODULE_DEFS, NAMES } from './data';
 import { tickHour, endOfDayDevelopers } from './DeveloperEngine';
 import { tickCodebase, spawnBug } from './CodebaseEngine';
 import { makeTicket, tickTickets } from './TicketEngine';
-import { chance, clamp, log, nextId, pick, rand, shuffle, slack, stability } from './util';
+import { aiGenerateSpec, aiAddTicket, aiCodeReview, aiMediate, aiHire, aiInvest } from './AiEngine';
+import { applyOverreliance, decayOverreliance, aiEvent } from './AiEngine';
+import { chance, clamp, log, nextId, pick, rand, shuffle, teamMessage, stability } from './util';
 import { RngEngine } from './seeded-rng';
 
 export const WORKING_HOURS = 8;
@@ -37,10 +39,11 @@ export function newGame(role: Role): GameState {
     budget: 800,
     guidelinesEnforced: false,
     okrActive: role === 'CIO',
+    ai: { usageCount: 0, overreliance: 0, lastAiAction: null },
     engineers: [],
     tickets: [],
     modules: MODULE_DEFS.map((m) => ({ ...m })),
-    slack: [],
+    teamMessages: [],
     log: [],
     gameOver: null,
     nextId: 1,
@@ -55,7 +58,7 @@ export function newGame(role: Role): GameState {
   state.tickets.push(makeTicket(state, 'epic'));
 
   log(state, `☀️ Day 1. You are the ${role}. The system is alive. For now.`, 'info');
-  slack(state, '#announcements', 'you', `hey team, I'm the new ${role}. let's ship.`);
+  teamMessage(state, '#announcements', 'you', `hey team, I'm the new ${role}. let's ship.`);
   return state;
 }
 
@@ -74,7 +77,7 @@ function pmInterruption(state: GameState) {
   t.progress = Math.max(0, t.progress - wiped);
   e.burnout = clamp(e.burnout + 10, 0, 100);
   e.morale = clamp(e.morale - 8, 0, 100);
-  slack(
+  teamMessage(
     state,
     '#dev-team',
     'Product Manager (NPC)',
@@ -98,7 +101,7 @@ function randomEvent(state: GameState) {
     log(state, `📦 Breaking dependency release wrecks ${m.name}`, 'bad');
   } else if (roll < 0.4) {
     for (const e of state.engineers) e.morale = clamp(e.morale + 10, 0, 100);
-    slack(state, '#announcements', 'CEO', 'proud of this team. doubling the pizza budget.');
+    teamMessage(state, '#announcements', 'CEO', 'proud of this team. doubling the pizza budget.');
     log(state, '📣 CEO tweets about the product. Morale +10 across the team', 'good');
   } else if (roll < 0.6) {
     const e = pick(state.engineers);
@@ -126,6 +129,9 @@ function endOfDay(state: GameState) {
   endOfDayDevelopers(state);
   tickTickets(state);
   tickCodebase(state);
+  applyOverreliance(state);
+  decayOverreliance(state);
+  aiEvent(state);
   state.budget -= 10 + state.engineers.length * 5; // salaries
 
   // the business never stops asking for things (but the backlog has a ceiling)
@@ -247,7 +253,7 @@ export const actions = {
     t.stuckInReview = false;
     next.stats.mediated++;
     log(next, `🕊️ You mediated the code review war over "${t.title}". Everyone pretends it never happened.`, 'good');
-    slack(next, '#dev-team', 'you', 'everyone is taking a 10 minute walk. the PR is merging after.');
+    teamMessage(next, '#dev-team', 'you', 'everyone is taking a 10 minute walk. the PR is merging after.');
     return next;
   },
 
@@ -296,7 +302,7 @@ export const actions = {
     const a = pick(ARCHETYPES);
     next.engineers.push(makeEngineer(next, a.id));
     log(next, `🤝 Hired ${next.engineers[next.engineers.length - 1].name} — ${a.name} ($100k)`, 'good');
-    slack(next, '#random', next.engineers[next.engineers.length - 1].name, 'hey! just joined. where is the wifi password');
+    teamMessage(next, '#random', next.engineers[next.engineers.length - 1].name, 'hey! just joined. where is the wifi password');
     return next;
   },
 
@@ -309,7 +315,7 @@ export const actions = {
     next.engineers = next.engineers.filter((x) => x.id !== engineerId);
     for (const other of next.engineers) other.morale = clamp(other.morale - 10, 0, 100);
     log(next, `🪓 You fired ${e.name}. The remaining team is quietly updating their CVs.`, 'bad');
-    slack(next, '#random', '??', 'why is the standup so quiet today');
+    teamMessage(next, '#random', '??', 'why is the standup so quiet today');
     return next;
   },
 
@@ -323,5 +329,43 @@ export const actions = {
     }
     log(next, '🏗️ You invested $80k in infrastructure. Every module feels it.', 'good');
     return next;
+  },
+
+  // ---------- AI Actions ----------
+
+  aiGenerateSpec(state: GameState, ticketId: number) {
+    const next = structuredClone(state);
+    if (!spendAp(next)) return state;
+    return aiGenerateSpec(next, ticketId);
+  },
+
+  aiAddTicket(state: GameState) {
+    const next = structuredClone(state);
+    if (!spendAp(next)) return state;
+    return aiAddTicket(next);
+  },
+
+  aiCodeReview(state: GameState, ticketId: number) {
+    const next = structuredClone(state);
+    if (!spendAp(next)) return state;
+    return aiCodeReview(next, ticketId);
+  },
+
+  aiMediate(state: GameState, ticketId: number) {
+    const next = structuredClone(state);
+    if (!spendAp(next)) return state;
+    return aiMediate(next, ticketId);
+  },
+
+  aiHire(state: GameState) {
+    const next = structuredClone(state);
+    if (!spendAp(next)) return state;
+    return aiHire(next);
+  },
+
+  aiInvest(state: GameState) {
+    const next = structuredClone(state);
+    if (!spendAp(next)) return state;
+    return aiInvest(next);
   },
 };

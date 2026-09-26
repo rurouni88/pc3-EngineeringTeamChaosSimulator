@@ -83,18 +83,18 @@ export function RoleSelector({ onStart }: { onStart: (role: Role) => void }) {
             className={`w-full text-left rounded-xl border transition-all duration-200 ${
               isExpanded
                 ? `${colors.border} ${colors.bg} ring-1 ${colors.border}`
-                : 'border-slate-800 bg-slate-900/60 hover:border-slate-600'
+                : 'border-theme bg-secondary/60 hover:border-theme'
             }`}
           >
             <div className="flex items-center gap-3 p-4 min-h-[56px]">
               <span className="text-2xl flex-shrink-0">{r.emoji}</span>
               <div className="flex-1 min-w-0">
-                <div className={`font-bold text-sm ${isExpanded ? colors.text : 'text-slate-200'}`}>
+                <div className={`font-bold text-sm ${isExpanded ? colors.text : 'text-primary'}`}>
                   {r.title}
                 </div>
-                <div className="text-xs text-slate-500 truncate">{r.desc}</div>
+                <div className="text-xs text-muted truncate">{r.desc}</div>
               </div>
-              <span className={`text-xs flex-shrink-0 ${isExpanded ? colors.text : 'text-slate-600'}`}>
+              <span className={`text-xs flex-shrink-0 ${isExpanded ? colors.text : 'text-muted'}`}>
                 {isExpanded ? '▶ PLAY' : '▶'}
               </span>
             </div>
