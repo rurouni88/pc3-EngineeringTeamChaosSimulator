@@ -11,7 +11,7 @@ const STAGES: { id: TicketStage; label: string; color: string; emoji: string }[]
   { id: 'backlog', label: 'BACKLOG', color: 'text-slate-400', emoji: '📥' },
   { id: 'inprogress', label: 'IN PROGRESS', color: 'text-sky-400', emoji: '🔨' },
   { id: 'qa', label: 'REVIEW / QA', color: 'text-amber-400', emoji: '🔍' },
-  { id: 'production', label: 'PRODUCTION', color: 'text-emerald-400', emoji: '🚀' },
+  { id: 'production', label: 'DONE', color: 'text-emerald-400', emoji: '✅' },
 ];
 
 const TYPE_BADGE: Record<Ticket['type'], string> = {
@@ -35,6 +35,8 @@ function TicketCard({
   const assignee = state.engineers.find((e) => e.assignedTicketId === ticket.id);
   const overdue = ticket.deadline < state.day && !ticket.done;
   const pct = Math.min(100, Math.round((ticket.progress / ticket.effort) * 100));
+  const prefix = state.role === 'PO' ? 'PO' : state.role === 'EM' ? 'EM' : 'CIO';
+  const key = `${prefix}-${String(ticket.id).padStart(4, '0')}`;
 
   return (
     <div
@@ -49,9 +51,10 @@ function TicketCard({
             : 'border-slate-800'
       }`}
     >
+      {/* Ticket header */}
       <div className="flex items-start gap-2">
-        <span className={`px-1.5 py-0.5 rounded border text-[10px] flex-shrink-0 ${TYPE_BADGE[ticket.type]}`}>
-          {ticket.type}
+        <span className={`px-1.5 py-0.5 rounded border text-[10px] font-bold flex-shrink-0 ${TYPE_BADGE[ticket.type]}`}>
+          {key}
         </span>
         <div className="flex-1 min-w-0">
           <div className="font-bold text-slate-100 truncate">{ticket.title}</div>
@@ -145,12 +148,18 @@ function TicketCard({
 export function JiraBoard({ state, selected, onAction }: Props) {
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 flex-1 min-h-0 flex flex-col">
-      <h2 className="text-sm font-bold text-indigo-400 mb-3">
-        ACTIVE SPRINT
-        <span className="text-slate-500 font-normal text-xs ml-2">
-          (select a minion, then tap a card to assign)
-        </span>
-      </h2>
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-5 h-5 rounded bg-blue-600 flex items-center justify-center text-[10px] text-white font-bold">J</div>
+        <h2 className="text-sm font-bold text-blue-400">JIRA</h2>
+        <span className="text-[9px] text-slate-600 ml-auto">Sprint 4 · 30 days left</span>
+      </div>
+
+      <div className="text-[10px] text-slate-500 mb-3">
+        (select a minion, then tap a card to assign)
+      </div>
+
+      {/* Ticket list grouped by stage */}
       <div className="flex-1 min-h-0 overflow-y-auto space-y-4 pr-1">
         {STAGES.map((stage) => {
           const tickets = state.tickets.filter((t) => t.stage === stage.id && !t.done);
