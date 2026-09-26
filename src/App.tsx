@@ -7,6 +7,7 @@ import { checkAchievements, type Achievement } from './engine/achievements';
 import { RngEngine } from './engine/seeded-rng';
 import { stability } from './engine/util';
 import { StatusBar } from './components/StatusBar';
+import { ChaosBoardLive } from './components/ChaosBoardLive';
 import { ArchitectureGraph } from './components/ArchitectureGraph';
 import { EngineerRoster } from './components/EngineerRoster';
 import { JiraBoard } from './components/JiraBoard';
@@ -173,7 +174,7 @@ export default function App() {
               onAction={onAction}
             />
           )}
-          {tab === 'system' && <ArchitectureGraph state={state} />}
+          {tab === 'system' && <ChaosBoardLive state={state} />}
           {tab === 'slack' && <SlackClone state={state} />}
         </div>
       </div>
