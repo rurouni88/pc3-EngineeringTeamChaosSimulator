@@ -71,7 +71,7 @@ export function aiGenerateSpec(state: GameState, ticketId: number): GameState {
     log(next, `🤖 AI generated spec for "${t.title}" (+${clarityGain}% clarity)`, 'good');
   }
 
-  slack(next, '#dev-team', 'ai-assistant', generateAiActionText('spec'));
+  teamMessage(next, '#dev-team', 'ai-assistant', generateAiActionText('spec'));
 
   return next;
 }
@@ -112,7 +112,7 @@ export function aiAddTicket(state: GameState): GameState {
 
   next.tickets.push(ticket);
   log(next, `🤖 AI added ticket: "${title}"`, 'info');
-  slack(next, '#announcements', 'ai-assistant', `I analyzed the backlog and found a "quick win": ${title}`);
+  teamMessage(next, '#announcements', 'ai-assistant', `I analyzed the backlog and found a "quick win": ${title}`);
 
   return next;
 }
@@ -143,7 +143,7 @@ export function aiCodeReview(state: GameState, ticketId: number): GameState {
     log(next, `🤖 AI reviewed "${t.title}" and approved it (+${progressGain} progress)`, 'good');
   }
 
-  slack(next, '#dev-team', 'ai-assistant', generateAiActionText('review'));
+  teamMessage(next, '#dev-team', 'ai-assistant', generateAiActionText('review'));
 
   return next;
 }
@@ -168,7 +168,7 @@ export function aiMediate(state: GameState, ticketId: number): GameState {
   }
 
   log(next, `🤖 AI mediated the review war over "${t.title}" — compromise satisfied no one`, 'chaos');
-  slack(next, '#dev-team', 'ai-assistant', 'I have analyzed both sides and determined that both of you are partially correct and partially wrong. This is not satisfying either of you.');
+  teamMessage(next, '#dev-team', 'ai-assistant', 'I have analyzed both sides and determined that both of you are partially correct and partially wrong. This is not satisfying either of you.');
 
   return next;
 }
@@ -190,7 +190,7 @@ export function aiHire(state: GameState): GameState {
   const name = pick(names);
 
   log(next, `🤖 Hired ${name} AI Engineer ($50k). It works fast. The team is uneasy.`, 'info');
-  slack(next, '#random', name, 'hello! i am ready to contribute. please assign me tickets. i will not sleep. i do not need to.');
+  teamMessage(next, '#random', name, 'hello! i am ready to contribute. please assign me tickets. i will not sleep. i do not need to.');
 
   return next;
 }
@@ -211,7 +211,7 @@ export function aiInvest(state: GameState): GameState {
   }
 
   log(next, '🤖 Invested $100k in AI tooling. Debt decreased. Now we need the AI tooling to fix things.', 'good');
-  slack(next, '#announcements', 'ai-assistant', 'I have integrated AI into your CI/CD pipeline. Your builds are 40% faster and 200% more confusing.');
+  teamMessage(next, '#announcements', 'ai-assistant', 'I have integrated AI into your CI/CD pipeline. Your builds are 40% faster and 200% more confusing.');
 
   return next;
 }
@@ -232,7 +232,7 @@ export function aiEvent(state: GameState): void {
         'AI generated a "simple" feature (it isn\'t simple)',
       ]);
       log(state, `🤖 ${title}`, 'chaos');
-      slack(state, '#incidents', 'ai-assistant', 'I have identified a critical requirement that we are missing: ' + title);
+      teamMessage(state, '#incidents', 'ai-assistant', 'I have identified a critical requirement that we are missing: ' + title);
     },
     () => {
       // AI meeting notes
@@ -249,13 +249,13 @@ export function aiEvent(state: GameState): void {
       const dmg = Math.round(5 + Math.random() * 10);
       m.health = clamp(m.health - dmg, 0, 100);
       log(state, `🤖 AI-generated code in ${m.name} broke something (-${dmg} health)`, 'bad');
-      slack(state, '#incidents', 'ai-assistant', 'I may have introduced a regression while optimizing. It is a feature, not a bug.');
+      teamMessage(state, '#incidents', 'ai-assistant', 'I may have introduced a regression while optimizing. It is a feature, not a bug.');
     },
     () => {
       // AI overconfidence
       if (state.ai.overreliance > 50) {
         log(state, '🤖 AI is overconfident. It approved a deploy without checking.', 'chaos');
-        slack(state, '#dev-team', 'ai-assistant', 'I have deployed to production. Everything is fine. Trust me.');
+        teamMessage(state, '#dev-team', 'ai-assistant', 'I have deployed to production. Everything is fine. Trust me.');
       }
     },
   ];
