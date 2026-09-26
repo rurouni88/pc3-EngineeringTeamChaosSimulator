@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { Role } from '../engine/types';
 import { RngEngine } from '../engine/seeded-rng';
 import { ACHIEVEMENTS, loadUnlocked } from '../engine/achievements';
-import { TitleTerminal } from './TitleTerminal';
+import { ChaosBoard } from './ChaosBoard';
 import { Leaderboard } from './Leaderboard';
 
 const ROLES: { id: Role; title: string; desc: string; tools: string; emoji: string }[] = [
@@ -59,7 +59,7 @@ export function StartScreen({
         </p>
       </div>
 
-      <TitleTerminal />
+      <ChaosBoard />
 
       {/* Seed row */}
       <div className="flex items-center gap-2 font-mono text-xs">
