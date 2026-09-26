@@ -2,8 +2,12 @@ import { useState } from 'react';
 import type { Role } from '../engine/types';
 import { RngEngine } from '../engine/seeded-rng';
 import { ACHIEVEMENTS, loadUnlocked } from '../engine/achievements';
-import { TitleTerminal } from './TitleTerminal';
+import { MetaStore } from '../engine/meta';
+import { ChaosBoard } from './ChaosBoard';
 import { Leaderboard } from './Leaderboard';
+import { AchievementModal } from './AchievementModal';
+import { HelpModal } from './HelpModal';
+import { OptionsModal } from './OptionsModal';
 
 const ROLES: { id: Role; title: string; desc: string; tools: string; emoji: string }[] = [
   {
@@ -42,6 +46,7 @@ export function StartScreen({
 }) {
   const [seed, setSeed] = useState<string>(() => RngEngine.generateSeed());
   const [editing, setEditing] = useState(false);
+  const [activeModal, setActiveModal] = useState<'achievements' | 'help' | 'options' | null>(null);
   const unlocked = loadUnlocked();
 
   const start = (role: Role) => {
@@ -49,6 +54,8 @@ export function StartScreen({
     else RngEngine.unseed();
     onStart(role, seed);
   };
+
+
 
   return (
     <div className="h-dvh overflow-y-auto flex flex-col items-center justify-center gap-3 sm:gap-5 p-3 sm:p-8">
@@ -59,7 +66,7 @@ export function StartScreen({
         </p>
       </div>
 
-      <TitleTerminal />
+      <ChaosBoard />
 
       {/* Seed row */}
       <div className="flex items-center gap-2 font-mono text-xs">
@@ -116,6 +123,28 @@ export function StartScreen({
             <div className="text-[10px] text-cyan-400 mt-2 sm:mt-3">{r.tools}</div>
           </button>
         ))}
+      </div>
+
+      {/* Modal buttons */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => setActiveModal('achievements')}
+          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-slate-400 text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
+        >
+          🏅 Achievements
+        </button>
+        <button
+          onClick={() => setActiveModal('help')}
+          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-slate-400 text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
+        >
+          📖 Help
+        </button>
+        <button
+          onClick={() => setActiveModal('options')}
+          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-slate-400 text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
+        >
+          ⚙️ Options
+        </button>
       </div>
 
       <Leaderboard />
