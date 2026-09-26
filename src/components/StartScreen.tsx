@@ -158,7 +158,7 @@ export function StartScreen({
         <p className="text-[10px] sm:text-xs text-muted text-center">
           Lose: stability hits 0, or the budget dies. Win: survive day 30 with 50%+ stability.
         </p>
-        <div className="text-[9px] text-muted mt-2">Copyright 2026 PC3 Enterprises</div>
+        <div className="text-[9px] text-muted mt-2">Copyright 2026 PC3 Enterprises · v0.2.0</div>
       </div>
 
       {/* Modals */}
