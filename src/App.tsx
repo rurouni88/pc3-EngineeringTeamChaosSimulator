@@ -212,7 +212,7 @@ export default function App() {
           <JiraBoard state={state} selected={selected} onAction={onAction} />
           <OpsLog state={state} />
         </div>
-        <div className="col-span-3 min-h-0">
+        <div className="col-span-3 flex flex-col min-h-0 overflow-hidden">
           <TeamsClone state={state} />
         </div>
       </div>
