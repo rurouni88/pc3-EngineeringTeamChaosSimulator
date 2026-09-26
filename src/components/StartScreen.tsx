@@ -8,31 +8,9 @@ import { Leaderboard } from './Leaderboard';
 import { AchievementModal } from './AchievementModal';
 import { HelpModal } from './HelpModal';
 import { OptionsModal } from './OptionsModal';
-import { RoleCard } from './RoleCard';
+import { RoleSelector } from './RoleSelector';
 
-const ROLES: { id: Role; title: string; desc: string; tools: string; emoji: string }[] = [
-  {
-    id: 'PO',
-    title: 'Product Owner',
-    emoji: '📋',
-    desc: 'Write specs. Vague specs = broken outcomes.',
-    tools: 'Write Specs · Add Tickets · Cut Scope',
-  },
-  {
-    id: 'EM',
-    title: 'Eng Manager',
-    emoji: '🧯',
-    desc: 'Buffer between chaos and humans. Mediate wars.',
-    tools: '1:1s · Code Reviews · Mediate · Guidelines',
-  },
-  {
-    id: 'CIO',
-    title: 'CIO',
-    emoji: '💼',
-    desc: 'Manage money and people. OKRs on by default.',
-    tools: 'Hire · Fire · Invest · Cut Scope',
-  },
-];
+
 
 const SEED_RE = /^[A-Z0-9]{8}$/;
 
@@ -112,22 +90,7 @@ export function StartScreen({
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 w-full max-w-4xl">
-        {ROLES.map((r) => (
-          <button
-            key={r.id}
-            onClick={() => start(r.id)}
-            className="text-left bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-5 hover:border-cyan-500/60 hover:bg-slate-800/60 active:bg-slate-800 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              <span className="text-2xl sm:text-3xl">{r.emoji}</span>
-              <span className="text-base sm:text-lg font-bold text-slate-100">{r.title}</span>
-            </div>
-            <div className="text-xs text-slate-400 mt-1 sm:mt-2">{r.desc}</div>
-            <div className="text-[10px] text-cyan-400 mt-2 sm:mt-3">{r.tools}</div>
-          </button>
-        ))}
-      </div>
+      <RoleSelector onStart={(role) => start(role)} />
 
       {/* Modal buttons */}
       <div className="flex gap-2">
