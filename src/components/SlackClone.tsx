@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import type { GameState } from '../engine/types';
-import { SLACK_CHANNELS } from '../engine/data';
+import { SLACK_CHANNELS, SLACK_IDLE, SLACK_ARGUMENTS, SLACK_PANIC } from '../engine/data';
 
-const CHANNEL_COLOR: Record<string, string> = {
+const TEAM_COLOR: Record<string, string> = {
   '#dev-team': 'text-purple-400',
   '#random': 'text-slate-400',
   '#incidents': 'text-rose-400',
   '#announcements': 'text-emerald-400',
 };
 
-/** Simulated team Slack: quirks, arguments, incidents, PM pings. */
+/** Simulated Microsoft Teams: channel pings, read receipts, and the
+ * eternal "You have a new message" notification that never stops. */
 export function SlackClone({ state }: { state: GameState }) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [channel, setChannel] = useState('#all');
@@ -31,7 +32,12 @@ export function SlackClone({ state }: { state: GameState }) {
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 flex-1 min-h-0 flex flex-col">
-      <h2 className="text-sm font-bold text-pink-400 mb-2">TEAM CHAT</h2>
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-2">
+        <div className="w-5 h-5 rounded bg-indigo-600 flex items-center justify-center text-[10px] text-white font-bold">T</div>
+        <h2 className="text-sm font-bold text-indigo-400">Microsoft Teams</h2>
+        <span className="text-[10px] text-slate-600 ml-auto">🔔 47 unread</span>
+      </div>
 
       {/* Channel selector */}
       <div className="flex gap-1 mb-3 overflow-x-auto pb-1 flex-nowrap">
@@ -41,7 +47,7 @@ export function SlackClone({ state }: { state: GameState }) {
             onClick={() => setChannel(c)}
             className={`px-2 py-1 rounded text-[10px] border flex-shrink-0 ${
               channel === c
-                ? 'bg-pink-500/20 border-pink-500/50 text-pink-300'
+                ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300'
                 : 'border-slate-800 text-slate-500 hover:border-slate-600'
             }`}
           >
@@ -55,10 +61,11 @@ export function SlackClone({ state }: { state: GameState }) {
         {msgs.slice(-60).map((m) => (
           <div key={m.id}>
             <div className="flex items-center gap-1.5">
-              <span className={`font-bold ${CHANNEL_COLOR[m.channel] ?? 'text-slate-300'}`}>
+              <span className={`font-bold ${TEAM_COLOR[m.channel] ?? 'text-slate-300'}`}>
                 @{m.author}
               </span>
               <span className="text-slate-600 text-[9px]">{m.channel} · d{m.day}</span>
+              <span className="text-slate-700 text-[8px]">✓✓</span>
             </div>
             <div className="text-slate-300 ml-0 mt-0.5">{m.text}</div>
           </div>
@@ -69,7 +76,7 @@ export function SlackClone({ state }: { state: GameState }) {
         <div ref={bottomRef} />
       </div>
 
-      {/* Burnout bar */}
+      {/* Burnout bar + Teams footer */}
       <div className="border-t border-slate-800 pt-3 mt-3">
         <div className="flex items-center justify-between mb-1">
           <span className="text-xs text-slate-400">Team Burnout</span>
@@ -82,6 +89,9 @@ export function SlackClone({ state }: { state: GameState }) {
             className={`h-full bg-rose-500 transition-all duration-700 ${avgBurnout > 60 ? 'animate-pulse' : ''}`}
             style={{ width: `${avgBurnout}%` }}
           />
+        </div>
+        <div className="text-[9px] text-slate-700 mt-1 text-center">
+          You have a new message · You have a new message · You have a new message
         </div>
       </div>
     </div>
