@@ -11,7 +11,7 @@ function healthStyle(health: number) {
 /** The codebase health map: modules change color with debt & damage. */
 export function ArchitectureGraph({ state }: { state: GameState }) {
   return (
-    <div className="bg-secondary border border-theme rounded-xl p-4 flex flex-col">
+    <div className="bg-secondary border border-theme rounded-xl p-3 lg:p-4 flex flex-col shrink-0">
       <h2 className="text-sm font-bold text-cyan-400 mb-3 flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
         SYSTEM ARCHITECTURE
