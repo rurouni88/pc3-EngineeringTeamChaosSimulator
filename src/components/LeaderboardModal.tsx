@@ -13,7 +13,7 @@ export function LeaderboardModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
       <div
-        className="bg-slate-900 border border-slate-700 rounded-xl p-4 w-full max-w-lg max-h-[80vh] overflow-y-auto"
+        className="bg-secondary border border-slate-700 rounded-xl p-4 w-full max-w-lg max-h-[80vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -21,7 +21,7 @@ export function LeaderboardModal({ onClose }: { onClose: () => void }) {
           <h2 className="text-lg font-bold text-amber-400">🏆 Best Quarters</h2>
           <button
             onClick={onClose}
-            className="text-slate-500 hover:text-slate-300 text-xl"
+            className="text-muted hover:text-slate-300 text-xl"
           >
             ✕
           </button>
@@ -29,7 +29,7 @@ export function LeaderboardModal({ onClose }: { onClose: () => void }) {
 
         {/* Content */}
         {runs.length === 0 ? (
-          <div className="text-center text-slate-500 py-8">
+          <div className="text-center text-muted py-8">
             <div className="text-3xl mb-2">📊</div>
             <div className="text-sm">No quarters played yet</div>
             <div className="text-xs text-slate-600 mt-1">Start a game to see your best runs</div>
@@ -39,7 +39,7 @@ export function LeaderboardModal({ onClose }: { onClose: () => void }) {
             {ROLES.map((role) => {
               const top = runs.filter((r) => r.role === role).slice(0, 3);
               return (
-                <div key={role} className="bg-slate-950/50 border border-slate-800 rounded-lg p-3">
+                <div key={role} className="bg-primary/50 border border-theme rounded-lg p-3">
                   <div className="text-sm text-slate-300 font-bold mb-2">
                     {ROLE_EMOJI[role]} {role === 'PO' ? 'Product Owner' : role === 'EM' ? 'Eng Manager' : 'CIO'}
                   </div>
@@ -48,7 +48,7 @@ export function LeaderboardModal({ onClose }: { onClose: () => void }) {
                   ) : (
                     <div className="space-y-1.5">
                       {top.map((r, i) => (
-                        <div key={i} className="flex justify-between text-xs text-slate-400">
+                        <div key={i} className="flex justify-between text-xs text-secondary">
                           <span>
                             <span className={r.won ? 'text-emerald-400' : 'text-rose-400'}>
                               {r.won ? '✓ Won' : '✗ Lost'}

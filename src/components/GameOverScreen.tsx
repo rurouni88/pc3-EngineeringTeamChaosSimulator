@@ -33,34 +33,34 @@ export function GameOverScreen({
   return (
     <div className="h-dvh overflow-y-auto flex flex-col items-center justify-center gap-4 sm:gap-6 p-4 sm:p-8 text-center">
       <h1 className={`text-4xl font-bold ${o.color}`}>{o.title}</h1>
-      <p className="text-slate-400 max-w-lg text-sm">{o.msg}</p>
+      <p className="text-secondary max-w-lg text-sm">{o.msg}</p>
       <div className="flex gap-8 text-sm text-slate-300">
         <div>
           <div className="text-2xl font-bold">{Math.min(state.day, 30)}</div>
-          <div className="text-xs text-slate-500">days survived</div>
+          <div className="text-xs text-muted">days survived</div>
         </div>
         <div>
           <div className="text-2xl font-bold">{stability(state)}%</div>
-          <div className="text-xs text-slate-500">final stability</div>
+          <div className="text-xs text-muted">final stability</div>
         </div>
         <div>
           <div className="text-2xl font-bold">${state.budget}k</div>
-          <div className="text-xs text-slate-500">remaining budget</div>
+          <div className="text-xs text-muted">remaining budget</div>
         </div>
         <div>
           <div className="text-2xl font-bold">{state.engineers.length}</div>
-          <div className="text-xs text-slate-500">minions remaining</div>
+          <div className="text-xs text-muted">minions remaining</div>
         </div>
       </div>
       {newAchievements.length > 0 && (
-        <div className="w-full max-w-md bg-slate-900 border border-amber-500/40 rounded-xl p-3">
+        <div className="w-full max-w-md bg-secondary border border-amber-500/40 rounded-xl p-3">
           <div className="text-xs uppercase tracking-widest text-amber-400 mb-2">
             🏅 New achievements
           </div>
           {newAchievements.map((a) => (
             <div key={a.id} className="text-sm text-slate-200">
               {a.emoji} <span className="font-bold">{a.title}</span>
-              <div className="text-[10px] text-slate-500">{a.desc}</div>
+              <div className="text-[10px] text-muted">{a.desc}</div>
             </div>
           ))}
         </div>

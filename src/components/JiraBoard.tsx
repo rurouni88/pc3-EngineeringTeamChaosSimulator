@@ -8,7 +8,7 @@ interface Props {
 }
 
 const STAGES: { id: TicketStage; label: string; color: string; emoji: string }[] = [
-  { id: 'backlog', label: 'BACKLOG', color: 'text-slate-400', emoji: '📥' },
+  { id: 'backlog', label: 'BACKLOG', color: 'text-secondary', emoji: '📥' },
   { id: 'inprogress', label: 'IN PROGRESS', color: 'text-sky-400', emoji: '🔨' },
   { id: 'qa', label: 'REVIEW / QA', color: 'text-amber-400', emoji: '🔍' },
   { id: 'production', label: 'DONE', color: 'text-emerald-400', emoji: '✅' },
@@ -43,12 +43,12 @@ function TicketCard({
       onClick={() => {
         if (selected !== null) onAction((s) => actions.assign(s, ticket.id, selected));
       }}
-      className={`rounded-lg border p-3 text-xs space-y-2 bg-slate-950/70 transition-colors ${
+      className={`rounded-lg border p-3 text-xs space-y-2 bg-primary/70 transition-colors ${
         ticket.stuckInReview
           ? 'border-rose-500/70 animate-pulse'
           : selected !== null
             ? 'border-indigo-500/60 cursor-pointer hover:bg-indigo-500/10'
-            : 'border-slate-800'
+            : 'border-theme'
       }`}
     >
       {/* Ticket header */}
@@ -58,7 +58,7 @@ function TicketCard({
         </span>
         <div className="flex-1 min-w-0">
           <div className="font-bold text-slate-100 truncate">{ticket.title}</div>
-          <div className="text-[10px] text-slate-500 truncate">
+          <div className="text-[10px] text-muted truncate">
             {module?.name} · spec {ticket.specClarity}% · due d{ticket.deadline}
             {overdue && <span className="text-rose-400 font-bold ml-1">OVERDUE</span>}
           </div>
@@ -74,7 +74,7 @@ function TicketCard({
       </div>
 
       {/* Assignee */}
-      <div className="text-[10px] text-slate-500">
+      <div className="text-[10px] text-muted">
         {assignee ? `👤 ${assignee.name}` : '— unassigned —'}
       </div>
 
@@ -94,7 +94,7 @@ function TicketCard({
               actions.assign(s, ticket.id, ev.target.value ? Number(ev.target.value) : null),
             )
           }
-          className="bg-slate-900 border border-slate-700 rounded text-[10px] px-2 py-1.5 flex-1 min-w-[120px]"
+          className="bg-secondary border border-slate-700 rounded text-[10px] px-2 py-1.5 flex-1 min-w-[120px]"
         >
           <option value="">— unassigned —</option>
           {state.engineers.map((e) => (
@@ -147,7 +147,7 @@ function TicketCard({
 /** The Jira board: mobile-friendly vertical list grouped by stage. */
 export function JiraBoard({ state, selected, onAction }: Props) {
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 flex-1 min-h-0 flex flex-col">
+    <div className="bg-secondary border border-theme rounded-xl p-3 flex-1 min-h-0 flex flex-col">
       {/* Header */}
       <div className="flex items-center gap-2 mb-3">
         <div className="w-5 h-5 rounded bg-blue-600 flex items-center justify-center text-[10px] text-white font-bold">J</div>
@@ -155,7 +155,7 @@ export function JiraBoard({ state, selected, onAction }: Props) {
         <span className="text-[9px] text-slate-600 ml-auto">Sprint 4 · 30 days left</span>
       </div>
 
-      <div className="text-[10px] text-slate-500 mb-3">
+      <div className="text-[10px] text-muted mb-3">
         (select a minion, then tap a card to assign)
       </div>
 

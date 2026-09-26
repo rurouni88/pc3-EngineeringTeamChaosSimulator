@@ -12,7 +12,7 @@ interface Props {
 function Bar({ label, value, color }: { label: string; value: number; color: string }) {
   return (
     <div className="flex items-center gap-2 text-xs">
-      <span className="w-24 text-slate-400">{label}</span>
+      <span className="w-24 text-secondary">{label}</span>
       <div className="w-28 bg-slate-800 h-2 rounded-full overflow-hidden">
         <div className={`h-full ${color} transition-all duration-500`} style={{ width: `${value}%` }} />
       </div>
@@ -29,9 +29,9 @@ export function StatusBar({ state, onAction, paused, onTogglePause }: Props) {
   const clock = `0${Math.min(9 + state.hour - 1, 17)}:00`;
 
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-3 py-2 border-b border-slate-800 bg-slate-900/80 text-sm">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-3 py-2 border-b border-theme bg-secondary/80 text-sm">
       <div className="font-black text-cyan-400 tracking-widest font-display">ETCS</div>
-      <div className="text-slate-400">
+      <div className="text-secondary">
         Day <span className="text-slate-100">{Math.min(state.day, 30)}</span>/30 · {clock}
       </div>
       <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-xs border border-indigo-500/30">
@@ -42,7 +42,7 @@ export function StatusBar({ state, onAction, paused, onTogglePause }: Props) {
         <Bar label="Stability" value={stab} color={stabColor(stab)} />
         <Bar label="Tech Debt" value={debt} color={debt >= 60 ? 'bg-rose-500' : 'bg-amber-500'} />
         <div className="text-xs">
-          <span className="text-slate-400">Budget </span>
+          <span className="text-secondary">Budget </span>
           <span className={state.budget < 100 ? 'text-rose-400' : 'text-emerald-400'}>
             ${state.budget}k
           </span>
@@ -55,7 +55,7 @@ export function StatusBar({ state, onAction, paused, onTogglePause }: Props) {
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="text-xs text-slate-400">AP</span>
+        <span className="text-xs text-secondary">AP</span>
         <div className="flex gap-1">
           {[0, 1, 2].map((i) => (
             <span key={i} className={`w-2.5 h-2.5 rounded-full ${i < state.ap ? 'bg-emerald-400' : 'bg-slate-700'}`} />

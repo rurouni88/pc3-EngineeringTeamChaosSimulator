@@ -40,7 +40,7 @@ export function StartScreen({
     <div className="h-dvh overflow-y-auto flex flex-col items-center justify-center gap-3 sm:gap-5 p-3 sm:p-8">
       <div className="text-center">
         <h1 className="text-4xl sm:text-5xl font-black text-cyan-400 tracking-widest font-display">ETCS</h1>
-        <p className="text-slate-400 text-xs sm:text-base mt-1 sm:mt-2 font-display tracking-wider">
+        <p className="text-secondary text-xs sm:text-base mt-1 sm:mt-2 font-display tracking-wider">
           Engineering Team Chaos Simulator
         </p>
         <p className="text-rose-500/80 text-[10px] sm:text-xs mt-2 italic">
@@ -52,7 +52,7 @@ export function StartScreen({
 
       {/* Seed row */}
       <div className="flex items-center gap-2 font-mono text-xs">
-        <span className="text-slate-500">SEED</span>
+        <span className="text-muted">SEED</span>
         {editing ? (
           <input
             value={seed}
@@ -61,7 +61,7 @@ export function StartScreen({
             }
             onBlur={() => setEditing(false)}
             onKeyDown={(e) => e.key === 'Enter' && setEditing(false)}
-            className="w-24 bg-slate-900 border border-cyan-500/50 rounded px-2 py-1 text-cyan-300 uppercase outline-none"
+            className="w-24 bg-secondary border border-cyan-500/50 rounded px-2 py-1 text-cyan-300 uppercase outline-none"
             autoFocus
           />
         ) : (
@@ -96,25 +96,25 @@ export function StartScreen({
       <div className="flex gap-2 flex-wrap justify-center">
         <button
           onClick={() => setActiveModal('achievements')}
-          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-slate-400 text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
+          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-secondary text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
         >
           🏅 Achievements
         </button>
         <button
           onClick={() => setActiveModal('leaderboard')}
-          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-slate-400 text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
+          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-secondary text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
         >
           🏆 Leaderboard
         </button>
         <button
           onClick={() => setActiveModal('help')}
-          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-slate-400 text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
+          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-secondary text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
         >
           📖 Help
         </button>
         <button
           onClick={() => setActiveModal('options')}
-          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-slate-400 text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
+          className="px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-secondary text-xs hover:border-cyan-500/50 hover:text-cyan-400 transition-colors"
         >
           ⚙️ Options
         </button>

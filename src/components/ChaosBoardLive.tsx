@@ -25,7 +25,7 @@ export function ChaosBoardLive({ state }: { state: GameState }) {
   const stabColor = stab >= 60 ? 'bg-emerald-500' : stab >= 30 ? 'bg-amber-500' : 'bg-rose-500';
 
   return (
-    <div className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 font-mono text-[10px]">
+    <div className="w-full bg-secondary border border-theme rounded-xl p-3 font-mono text-[10px]">
       {/* Grafana header */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
@@ -56,19 +56,19 @@ export function ChaosBoardLive({ state }: { state: GameState }) {
             <div className="flex items-center justify-between mb-0.5">
               <span className="text-slate-300 font-bold text-[10px]">{m.name}</span>
               <span className={`text-[9px] ${
-                m.health < 30 ? 'text-rose-400' : 'text-slate-500'
+                m.health < 30 ? 'text-rose-400' : 'text-muted'
               }`}>
                 {Math.round(m.health)}%
               </span>
             </div>
             <div className="flex gap-1">
-              <div className="flex-1 bg-slate-950 h-1.5 rounded-full overflow-hidden">
+              <div className="flex-1 bg-primary h-1.5 rounded-full overflow-hidden">
                 <div
                   className={`h-full ${m.color} transition-all duration-300`}
                   style={{ width: `${m.health}%` }}
                 />
               </div>
-              <div className="flex-1 bg-slate-950 h-1.5 rounded-full overflow-hidden">
+              <div className="flex-1 bg-primary h-1.5 rounded-full overflow-hidden">
                 <div
                   className={`h-full ${m.debt >= 50 ? 'bg-rose-500' : m.debt >= 30 ? 'bg-amber-500' : 'bg-emerald-500'} transition-all duration-300`}
                   style={{ width: `${m.debt}%` }}

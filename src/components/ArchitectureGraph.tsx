@@ -11,7 +11,7 @@ function healthStyle(health: number) {
 /** The codebase health map: modules change color with debt & damage. */
 export function ArchitectureGraph({ state }: { state: GameState }) {
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col">
+    <div className="bg-secondary border border-theme rounded-xl p-4 flex flex-col">
       <h2 className="text-sm font-bold text-cyan-400 mb-3 flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
         SYSTEM ARCHITECTURE
@@ -26,7 +26,7 @@ export function ArchitectureGraph({ state }: { state: GameState }) {
             <div className="mt-1 text-[10px] opacity-80">
               HP {Math.round(m.health)} · Debt {Math.round(m.debt)}
             </div>
-            <div className="mt-1 w-full bg-slate-950/60 h-1.5 rounded-full overflow-hidden">
+            <div className="mt-1 w-full bg-primary/60 h-1.5 rounded-full overflow-hidden">
               <div
                 className="h-full transition-all duration-700"
                 style={{

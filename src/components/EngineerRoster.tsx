@@ -11,11 +11,11 @@ interface Props {
 
 const STATUS_STYLE: Record<string, string> = {
   working: 'text-emerald-400',
-  slacking: 'text-slate-400',
+  slacking: 'text-secondary',
   arguing: 'text-rose-400',
   panicking: 'text-rose-400',
   'on-leave': 'text-amber-400',
-  ghosted: 'text-slate-500',
+  ghosted: 'text-muted',
 };
 
 const STATUS_EMOJI: Record<string, string> = {
@@ -30,24 +30,24 @@ const STATUS_EMOJI: Record<string, string> = {
 function MiniBar({ label, value, color }: { label: string; value: number; color: string }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-[9px] text-slate-500 w-8">{label}</span>
+      <span className="text-[9px] text-muted w-8">{label}</span>
       <div className="flex-1 bg-slate-800 h-1.5 rounded-full overflow-hidden">
         <div
           className={`h-full ${color} transition-all duration-500`}
           style={{ width: `${value}%` }}
         />
       </div>
-      <span className="text-[9px] text-slate-400 w-6 text-right">{value}%</span>
+      <span className="text-[9px] text-secondary w-6 text-right">{value}%</span>
     </div>
   );
 }
 
 export function EngineerRoster({ state, selected, onSelect, onAction }: Props) {
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 flex-1 min-h-0 flex flex-col">
+    <div className="bg-secondary border border-theme rounded-xl p-3 flex-1 min-h-0 flex flex-col">
       <h2 className="text-sm font-bold text-pink-400 mb-3">
         THE MINIONS
-        <span className="text-slate-500 font-normal text-xs ml-2">
+        <span className="text-muted font-normal text-xs ml-2">
           (tap to select, then tap a ticket to assign)
         </span>
       </h2>
@@ -63,14 +63,14 @@ export function EngineerRoster({ state, selected, onSelect, onAction }: Props) {
               className={`cursor-pointer rounded-lg border p-3 text-xs transition-colors ${
                 isSel
                   ? 'border-pink-500 bg-pink-500/10'
-                  : 'border-slate-800 bg-slate-950/50 hover:border-slate-600'
+                  : 'border-theme bg-primary/50 hover:border-slate-600'
               }`}
             >
               <div className="flex items-center gap-2">
                 <span className="text-lg">{arch.emoji}</span>
                 <div className="flex-1 min-w-0">
                   <div className="font-bold text-slate-100">{e.name}</div>
-                  <div className="text-[10px] text-slate-500">{arch.name}</div>
+                  <div className="text-[10px] text-muted">{arch.name}</div>
                 </div>
                 <span className={`text-xs ${STATUS_STYLE[e.status]}`}>
                   {STATUS_EMOJI[e.status]} {e.status}
@@ -86,14 +86,14 @@ export function EngineerRoster({ state, selected, onSelect, onAction }: Props) {
 
               {/* Assigned ticket */}
               {ticket && (
-                <div className="mt-2 text-slate-400 text-[10px] truncate">
+                <div className="mt-2 text-secondary text-[10px] truncate">
                   🎫 {ticket.title} ({Math.round(ticket.progress)}/{ticket.effort})
                 </div>
               )}
 
               {/* Last action */}
               {e.lastAction && (
-                <div className="mt-1 text-[10px] text-slate-500 italic truncate">{e.lastAction}</div>
+                <div className="mt-1 text-[10px] text-muted italic truncate">{e.lastAction}</div>
               )}
 
               {/* Action buttons */}

@@ -42,13 +42,13 @@ export function OptionsModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
       <div
-        className="w-full max-w-sm bg-slate-900 border border-slate-700 rounded-xl p-4"
+        className="w-full max-w-sm bg-secondary border border-slate-700 rounded-xl p-4"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-bold text-slate-400 tracking-widest">⚙️ OPTIONS</h2>
-          <button onClick={onClose} className="text-slate-500 hover:text-slate-300 text-lg">✕</button>
+          <h2 className="text-sm font-bold text-secondary tracking-widest">⚙️ OPTIONS</h2>
+          <button onClick={onClose} className="text-muted hover:text-slate-300 text-lg">✕</button>
         </div>
 
         {/* Tabs */}
@@ -60,7 +60,7 @@ export function OptionsModal({
               className={`flex-1 px-2 py-1.5 rounded-lg text-xs border ${
                 activeTab === t.id
                   ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300'
-                  : 'border-slate-800 text-slate-500 hover:border-slate-600'
+                  : 'border-theme text-muted hover:border-slate-600'
               }`}
             >
               {t.icon} {t.label}
@@ -85,23 +85,23 @@ export function OptionsModal({
 
         {/* Statistics Tab */}
         {activeTab === 'stats' && (
-          <div className="bg-slate-950/50 rounded-lg border border-slate-800 p-3">
-            <div className="text-[10px] text-slate-500 uppercase tracking-widest mb-2">Lifetime Stats</div>
+          <div className="bg-primary/50 rounded-lg border border-theme p-3">
+            <div className="text-[10px] text-muted uppercase tracking-widest mb-2">Lifetime Stats</div>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div>
-                <span className="text-slate-500">Total Runs</span>
+                <span className="text-muted">Total Runs</span>
                 <div className="font-bold text-slate-100">{meta.totalRuns}</div>
               </div>
               <div>
-                <span className="text-slate-500">Wins</span>
+                <span className="text-muted">Wins</span>
                 <div className="font-bold text-emerald-400">{meta.wins}</div>
               </div>
               <div>
-                <span className="text-slate-500">Best Stability</span>
+                <span className="text-muted">Best Stability</span>
                 <div className="font-bold text-cyan-400">{meta.bestStability}%</div>
               </div>
               <div>
-                <span className="text-slate-500">Win Rate</span>
+                <span className="text-muted">Win Rate</span>
                 <div className="font-bold text-amber-400">
                   {meta.totalRuns > 0 ? Math.round((meta.wins / meta.totalRuns) * 100) : 0}%
                 </div>

@@ -92,18 +92,18 @@ function SettingRow({ label, help, children, disabled }: {
   const [showHelp, setShowHelp] = useState(false);
 
   return (
-    <div className="flex items-center justify-between py-3 border-b border-slate-800 last:border-0">
+    <div className="flex items-center justify-between py-3 border-b border-theme last:border-0">
       <div className="flex items-center gap-2">
         <span className={`text-xs ${disabled ? 'text-slate-600' : 'text-slate-300'}`}>{label}</span>
         <button
           onClick={() => setShowHelp(!showHelp)}
-          className="w-4 h-4 rounded-full bg-slate-700 text-[8px] text-slate-400 flex items-center justify-center hover:bg-slate-600"
+          className="w-4 h-4 rounded-full bg-slate-700 text-[8px] text-secondary flex items-center justify-center hover:bg-slate-600"
           title={help}
         >
           ?
         </button>
         {showHelp && (
-          <div className="absolute left-4 right-4 bottom-0 bg-slate-800 border border-slate-700 rounded-lg p-2 text-[10px] text-slate-400 z-10">
+          <div className="absolute left-4 right-4 bottom-0 bg-slate-800 border border-slate-700 rounded-lg p-2 text-[10px] text-secondary z-10">
             {help}
           </div>
         )}
@@ -135,13 +135,13 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
       <div
-        className="bg-slate-900 border border-slate-700 rounded-xl p-4 w-full max-w-sm"
+        className="bg-secondary border border-slate-700 rounded-xl p-4 w-full max-w-sm"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-indigo-400">⚙️ Settings</h2>
-          <button onClick={onClose} className="text-slate-500 hover:text-slate-300 text-xl">✕</button>
+          <button onClick={onClose} className="text-muted hover:text-slate-300 text-xl">✕</button>
         </div>
 
         {/* Settings list */}
@@ -159,7 +159,7 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
                   className={`px-2.5 py-1 rounded text-[10px] border transition-colors ${
                     settings.theme === t
                       ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300'
-                      : 'border-slate-700 text-slate-500 hover:border-slate-600'
+                      : 'border-slate-700 text-muted hover:border-slate-600'
                   }`}
                 >
                   {THEME_LABELS[t]}

@@ -83,7 +83,7 @@ export function RoleSelector({ onStart }: { onStart: (role: Role) => void }) {
             className={`w-full text-left rounded-xl border transition-all duration-200 ${
               isExpanded
                 ? `${colors.border} ${colors.bg} ring-1 ${colors.border}`
-                : 'border-slate-800 bg-slate-900/60 hover:border-slate-600'
+                : 'border-theme bg-secondary/60 hover:border-slate-600'
             }`}
           >
             <div className="flex items-center gap-3 p-4 min-h-[56px]">
@@ -92,7 +92,7 @@ export function RoleSelector({ onStart }: { onStart: (role: Role) => void }) {
                 <div className={`font-bold text-sm ${isExpanded ? colors.text : 'text-slate-200'}`}>
                   {r.title}
                 </div>
-                <div className="text-xs text-slate-500 truncate">{r.desc}</div>
+                <div className="text-xs text-muted truncate">{r.desc}</div>
               </div>
               <span className={`text-xs flex-shrink-0 ${isExpanded ? colors.text : 'text-slate-600'}`}>
                 {isExpanded ? '▶ PLAY' : '▶'}
