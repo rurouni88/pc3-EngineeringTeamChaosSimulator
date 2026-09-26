@@ -155,10 +155,10 @@ export const NAMES = [
   'Aidan', 'Alex', 'Andrew', 'Ben', 'Brad', 'Brendan', 'Cameron', 'Chris',
   'Clint', 'Damon', 'Dan', 'David', 'Dean', 'Dylan', 'Eric', 'Fei',
   'Harry', 'Heidi', 'Helen', 'James', 'Jason', 'Jean', 'Jena', 'John',
-  'Jonathan', 'Justin', 'Lili', 'Louise', 'Luke', 'Matthew', 'Michele',
-  'Michelle', 'Nelly', 'Nick', 'Omar', 'Paul', 'Peter', 'Piers', 'Radu',
-  'Razel', 'Rebecca', 'Rey', 'Rupali', 'Sandy', 'Scott', 'Sean', 'Seng',
-  'Simon', 'Stephanie', 'Susanto', 'Terra', 'Valance', 'Will', 'Yung',
+  'Jonathan', 'Justin', 'Lili', 'Louise', 'Luke', 'Marie', 'Matthew',
+  'Michele', 'Michelle', 'Nelly', 'Nick', 'Omar', 'Paul', 'Peter', 'Piers',
+  'Radu', 'Razel', 'Rebecca', 'Rey', 'Rupali', 'Sandy', 'Scott', 'Sean',
+  'Seng', 'Simon', 'Stephanie', 'Susanto', 'Terra', 'Valance', 'Will', 'Yung',
 ];
 
 export const MODULE_DEFS: Module[] = [
