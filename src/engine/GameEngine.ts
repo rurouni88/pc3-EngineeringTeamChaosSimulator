@@ -3,6 +3,8 @@ import { ARCHETYPES, MODULE_DEFS, NAMES } from './data';
 import { tickHour, endOfDayDevelopers } from './DeveloperEngine';
 import { tickCodebase, spawnBug } from './CodebaseEngine';
 import { makeTicket, tickTickets } from './TicketEngine';
+import { aiGenerateSpec, aiAddTicket, aiCodeReview, aiMediate, aiHire, aiInvest } from './AiEngine';
+import { applyOverreliance, decayOverreliance, aiEvent } from './AiEngine';
 import { chance, clamp, log, nextId, pick, rand, shuffle, teamMessage, stability } from './util';
 import { RngEngine } from './seeded-rng';
 
@@ -37,6 +39,7 @@ export function newGame(role: Role): GameState {
     budget: 800,
     guidelinesEnforced: false,
     okrActive: role === 'CIO',
+    ai: { usageCount: 0, overreliance: 0, lastAiAction: null },
     engineers: [],
     tickets: [],
     modules: MODULE_DEFS.map((m) => ({ ...m })),
@@ -126,6 +129,9 @@ function endOfDay(state: GameState) {
   endOfDayDevelopers(state);
   tickTickets(state);
   tickCodebase(state);
+  applyOverreliance(state);
+  decayOverreliance(state);
+  aiEvent(state);
   state.budget -= 10 + state.engineers.length * 5; // salaries
 
   // the business never stops asking for things (but the backlog has a ceiling)
@@ -323,5 +329,43 @@ export const actions = {
     }
     log(next, '🏗️ You invested $80k in infrastructure. Every module feels it.', 'good');
     return next;
+  },
+
+  // ---------- AI Actions ----------
+
+  aiGenerateSpec(state: GameState, ticketId: number) {
+    const next = structuredClone(state);
+    if (!spendAp(next)) return state;
+    return aiGenerateSpec(next, ticketId);
+  },
+
+  aiAddTicket(state: GameState) {
+    const next = structuredClone(state);
+    if (!spendAp(next)) return state;
+    return aiAddTicket(next);
+  },
+
+  aiCodeReview(state: GameState, ticketId: number) {
+    const next = structuredClone(state);
+    if (!spendAp(next)) return state;
+    return aiCodeReview(next, ticketId);
+  },
+
+  aiMediate(state: GameState, ticketId: number) {
+    const next = structuredClone(state);
+    if (!spendAp(next)) return state;
+    return aiMediate(next, ticketId);
+  },
+
+  aiHire(state: GameState) {
+    const next = structuredClone(state);
+    if (!spendAp(next)) return state;
+    return aiHire(next);
+  },
+
+  aiInvest(state: GameState) {
+    const next = structuredClone(state);
+    if (!spendAp(next)) return state;
+    return aiInvest(next);
   },
 };

@@ -95,6 +95,7 @@ export interface GameState {
   budget: number; // $k
   guidelinesEnforced: boolean;
   okrActive: boolean;
+  ai: { usageCount: number; overreliance: number; lastAiAction: string | null };
   engineers: Engineer[];
   tickets: Ticket[];
   modules: Module[];

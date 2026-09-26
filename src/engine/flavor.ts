@@ -4,6 +4,7 @@ interface SatiricalTemplates {
   gitCommits: Record<string, string[]>;
   teamRants: Record<string, string[]>;
   highBurnout: string[];
+  aiActions: Record<string, string[]>;
 }
 
 /** Pre-compiled satirical text, keyed by archetype id. */
@@ -246,6 +247,20 @@ const TEXT_MATRIX: SatiricalTemplates = {
     'I\'ve updated my LinkedIn. not because I want to leave. because I need to.',
     'The CI pipeline failed. again. I\'ve accepted my fate.',
   ],
+  aiActions: {
+    spec: [
+      'I have generated a spec. It is 47 pages long. Most of it is hallucinated.',
+      'Spec generated. The AI is confident. The team is not.',
+      'I analyzed the requirements. They were wrong. Here is a new spec.',
+      'AI generated spec: +30% clarity, +10% confusion.',
+    ],
+    review: [
+      'I have reviewed the code. It is acceptable. By AI standards.',
+      'Code review complete. I approved it. I may have missed something.',
+      'I reviewed 4000 lines in 0.3 seconds. That was fast. That was wrong.',
+      'AI code review: approved. The humans can deal with the consequences.',
+    ],
+  },
 };
 
 /** Deterministic-flavored text selection: burnout wins, then trait. */
@@ -265,4 +280,12 @@ export function generateDevActionText(
   }
   const rants = TEXT_MATRIX.teamRants[quirk] ?? ['...'];
   return `[TEAMS] **${devName}**: ${pick(rants)}`;
+}
+
+/** AI action text — satirical AI assistant messages. */
+export function generateAiActionText(action: string): string {
+  const actions = TEXT_MATRIX.aiActions[action] ?? [
+    'I have done the thing. The thing is done. There may be consequences.',
+  ];
+  return pick(actions);
 }
