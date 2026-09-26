@@ -19,10 +19,10 @@ import { GameOverScreen } from './components/GameOverScreen';
 type Tab = 'board' | 'team' | 'system' | 'slack';
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: 'board', label: '🗂 Board' },
+  { id: 'board', label: '🗂 JIRA' },
   { id: 'team', label: '👥 Team' },
-  { id: 'system', label: '🏗 System' },
-  { id: 'slack', label: '💬 Slack' },
+  { id: 'system', label: '📊 Grafana' },
+  { id: 'slack', label: '💬 Teams' },
 ];
 
 export default function App() {

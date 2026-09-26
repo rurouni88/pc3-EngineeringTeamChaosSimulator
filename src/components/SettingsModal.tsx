@@ -40,6 +40,14 @@ function saveSettings(settings: Settings): void {
   }
 }
 
+function applyTheme(theme: 'dark' | 'light'): void {
+  document.documentElement.setAttribute('data-theme', theme);
+  document.body.classList.toggle('bg-zinc-950', theme === 'dark');
+  document.body.classList.toggle('bg-zinc-100', theme === 'light');
+  document.body.classList.toggle('text-zinc-200', theme === 'dark');
+  document.body.classList.toggle('text-zinc-900', theme === 'light');
+}
+
 function ToggleSwitch({ checked, onChange, disabled }: { checked: boolean; onChange: () => void; disabled?: boolean }) {
   return (
     <label className="relative inline-flex items-center cursor-not-allowed">
@@ -96,14 +104,22 @@ function SettingRow({ label, help, children, disabled }: {
 }
 
 export function SettingsModal({ onClose }: { onClose: () => void }) {
-  const [settings, setSettings] = useState<Settings>(loadSettings);
+  const [settings, setSettings] = useState<Settings>(() => {
+    const s = loadSettings();
+    applyTheme(s.darkMode ? 'dark' : 'light');
+    return s;
+  });
 
   useEffect(() => {
     saveSettings(settings);
   }, [settings]);
 
   const update = <K extends keyof Settings>(key: K, value: Settings[K]) => {
-    setSettings((prev) => ({ ...prev, [key]: value }));
+    const next = { ...settings, [key]: value };
+    setSettings(next);
+    if (key === 'darkMode') {
+      applyTheme(value ? 'dark' : 'light');
+    }
   };
 
   return (

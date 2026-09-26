@@ -5,6 +5,34 @@
   --font-display: "Orbitron", sans-serif;
 }
 
+/* Dark mode (default) */
+:root, :root[data-theme="dark"] {
+  --bg-primary: #09090b;
+  --bg-secondary: #18181b;
+  --bg-tertiary: #27272a;
+  --bg-card: #1e1e2e;
+  --border-color: #27272a;
+  --text-primary: #e4e4e7;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+}
+
+/* Light mode */
+:root[data-theme="light"] {
+  --bg-primary: #f4f4f5;
+  --bg-secondary: #e4e4e7;
+  --bg-tertiary: #d4d4d8;
+  --bg-card: #ffffff;
+  --border-color: #d4d4d8;
+  --text-primary: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #a1a1aa;
+}
+
 body {
   @apply bg-zinc-950 text-zinc-200 antialiased;
+}
+
+[data-theme="light"] body {
+  @apply bg-zinc-100 text-zinc-900;
 }
