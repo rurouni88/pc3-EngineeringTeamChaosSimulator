@@ -11,7 +11,7 @@ import { ChaosBoardLive } from './components/ChaosBoardLive';
 import { ArchitectureGraph } from './components/ArchitectureGraph';
 import { EngineerRoster } from './components/EngineerRoster';
 import { JiraBoard } from './components/JiraBoard';
-import { SlackClone } from './components/SlackClone';
+import { TeamsClone } from './components/TeamsClone';
 import { OpsLog } from './components/OpsLog';
 import { StartScreen } from './components/StartScreen';
 import { GameOverScreen } from './components/GameOverScreen';
@@ -193,7 +193,7 @@ export default function App() {
             />
           )}
           {tab === 'system' && <ChaosBoardLive state={state} />}
-          {tab === 'slack' && <SlackClone state={state} />}
+          {tab === 'slack' && <TeamsClone state={state} />}
         </div>
       </div>
 
@@ -213,7 +213,7 @@ export default function App() {
           <OpsLog state={state} />
         </div>
         <div className="col-span-3 min-h-0">
-          <SlackClone state={state} />
+          <TeamsClone state={state} />
         </div>
       </div>
     </div>

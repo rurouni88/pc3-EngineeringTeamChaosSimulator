@@ -229,9 +229,9 @@ export const TICKET_TEMPLATES: Record<
   ],
 };
 
-export const SLACK_CHANNELS = ['#dev-team', '#random', '#incidents', '#announcements'];
+export const TEAM_CHANNELS = ['#dev-team', '#random', '#incidents', '#announcements'];
 
-export const SLACK_IDLE = [
+export const TEAM_IDLE = [
   'anyone else seeing CI be weird or is it just me',
   'lunch? 🍜',
   'hot take: the roadmap is a vibe',
@@ -254,7 +254,7 @@ export const SLACK_IDLE = [
   'I\'m not saying the code is messy, but the linter cried',
 ];
 
-export const SLACK_ARGUMENTS = [
+export const TEAM_ARGUMENTS = [
   'we need to talk about the architecture. again.',
   'this PR is a crime against humanity',
   'can we PLEASE stop debating naming conventions',
@@ -277,12 +277,12 @@ export const SLACK_ARGUMENTS = [
   'the bug is a feature, you just don\'t get it',
 ];
 
-export const SLACK_PANIC = [
+export const TEAM_PANIC = [
   'STAGING IS DOWN. I repeat. STAGING IS DOWN.',
   'the pager is not a toy',
   'I am deleting my branch. everything is fine.',
   'why is prod talking to the sandbox db',
-  'PROD IS ON FIRE AND THE FIRE ALARM IS THE SLACK NOTIFICATION',
+  'PROD IS ON FIRE AND THE FIRE ALARM IS THE TEAMS NOTIFICATION',
   'I just pushed a hotfix. it broke more things. standard procedure.',
   'the database is locked. by whom? by our poor life choices.',
   'I accidentally ran `rm -rf` on the wrong box. it was prod.',

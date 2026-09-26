@@ -2,7 +2,7 @@ import { pick } from './util';
 
 interface SatiricalTemplates {
   gitCommits: Record<string, string[]>;
-  slackRants: Record<string, string[]>;
+  teamRants: Record<string, string[]>;
   highBurnout: string[];
 }
 
@@ -119,7 +119,7 @@ const TEXT_MATRIX: SatiricalTemplates = {
       'the community is growing. the codebase is not',
     ],
   },
-  slackRants: {
+  teamRants: {
     intern: [
       'quick question... actual important question',
       'I broke staging. I can fix it. probably.',
@@ -257,12 +257,12 @@ export function generateDevActionText(
 ): string {
   if (burnout > 80) {
     const rant = pick(TEXT_MATRIX.highBurnout);
-    return `[SLACK] **${devName}**: ${rant}`;
+    return `[TEAMS] **${devName}**: ${rant}`;
   }
   if (context === 'work') {
     const commits = TEXT_MATRIX.gitCommits[quirk] ?? ['fixed stuff'];
     return `[GIT] **${devName}** committed: "${pick(commits)}"`;
   }
-  const rants = TEXT_MATRIX.slackRants[quirk] ?? ['...'];
-  return `[SLACK] **${devName}**: ${pick(rants)}`;
+  const rants = TEXT_MATRIX.teamRants[quirk] ?? ['...'];
+  return `[TEAMS] **${devName}**: ${pick(rants)}`;
 }

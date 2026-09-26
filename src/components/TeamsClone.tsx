@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { GameState } from '../engine/types';
-import { SLACK_CHANNELS, SLACK_IDLE, SLACK_ARGUMENTS, SLACK_PANIC } from '../engine/data';
+import { TEAM_CHANNELS, TEAM_IDLE, TEAM_ARGUMENTS, TEAM_PANIC } from '../engine/data';
 
 const TEAM_COLOR: Record<string, string> = {
   '#dev-team': 'text-purple-400',
@@ -11,18 +11,18 @@ const TEAM_COLOR: Record<string, string> = {
 
 /** Simulated Microsoft Teams: channel pings, read receipts, and the
  * eternal "You have a new message" notification that never stops. */
-export function SlackClone({ state }: { state: GameState }) {
+export function TeamsClone({ state }: { state: GameState }) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [channel, setChannel] = useState('#all');
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [state.slack.length]);
+  }, [state.teamMessages.length]);
 
   const msgs =
     channel === '#all'
-      ? state.slack
-      : state.slack.filter((m) => m.channel === channel);
+      ? state.teamMessages
+      : state.teamMessages.filter((m) => m.channel === channel);
 
   const avgBurnout = Math.round(
     state.engineers.length
@@ -41,7 +41,7 @@ export function SlackClone({ state }: { state: GameState }) {
 
       {/* Channel selector */}
       <div className="flex gap-1 mb-3 overflow-x-auto pb-1 flex-nowrap">
-        {['#all', ...SLACK_CHANNELS].map((c) => (
+        {['#all', ...TEAM_CHANNELS].map((c) => (
           <button
             key={c}
             onClick={() => setChannel(c)}

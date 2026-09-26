@@ -1,8 +1,8 @@
 import type { Archetype, Engineer, GameState, Ticket } from './types';
-import { ARCHETYPE_MAP, SLACK_IDLE } from './data';
+import { ARCHETYPE_MAP, TEAM_IDLE } from './data';
 import { generateDevActionText } from './flavor';
 import { spawnBug } from './CodebaseEngine';
-import { avgDebt, chance, clamp, log, pick, rand, slack } from './util';
+import { avgDebt, chance, clamp, log, pick, rand, teamMessage } from './util';
 
 function applyQuirk(state: GameState, eng: Engineer, arch: Archetype, ticket: Ticket) {
   switch (arch.id) {
@@ -11,33 +11,33 @@ function applyQuirk(state: GameState, eng: Engineer, arch: Archetype, ticket: Ti
       {
         const m = state.modules.find((mod) => mod.id === ticket.moduleId)!;
         m.debt = clamp(m.debt + 12, 0, 100);
-        slack(state, '#dev-team', eng.name, `I rewrote ${m.name} in a new language. Behold.`);
+        teamMessage(state, '#dev-team', eng.name, `I rewrote ${m.name} in a new language. Behold.`);
       }
       break;
     case 'grindset':
       eng.energy = clamp(eng.energy - 12, 0, 100);
-      slack(state, '#dev-team', eng.name, 'still typing. it is 2am. I am the pipeline now.');
+      teamMessage(state, '#dev-team', eng.name, 'still typing. it is 2am. I am the pipeline now.');
       break;
     case 'architect':
       {
         const m = state.modules.find((mod) => mod.id === ticket.moduleId)!;
         m.debt = clamp(m.debt + 10, 0, 100);
         m.health = clamp(m.health - 4, 0, 100);
-        slack(state, '#dev-team', eng.name, `added a microservice to ${m.name}. it needed it.`);
+        teamMessage(state, '#dev-team', eng.name, `added a microservice to ${m.name}. it needed it.`);
       }
       break;
     case 'zen':
-      slack(state, '#random', eng.name, 'I have declined this urgency. It is declining me back.');
+      teamMessage(state, '#random', eng.name, 'I have declined this urgency. It is declining me back.');
       break;
     case 'imposter':
       ticket.progress = Math.max(0, ticket.progress - 10);
-      slack(state, '#incidents', eng.name, 'I deleted 400 lines to "clean up". I do not know what they were.');
+      teamMessage(state, '#incidents', eng.name, 'I deleted 400 lines to "clean up". I do not know what they were.');
       log(state, `😱 ${eng.name} deleted code out of pure panic`, 'chaos');
       break;
     case 'slackwiz':
       if (chance(0.5)) {
         ticket.progress *= 2;
-        slack(state, '#dev-team', eng.name, 'shipped it. you are welcome. back to my podcast.');
+        teamMessage(state, '#dev-team', eng.name, 'shipped it. you are welcome. back to my podcast.');
       }
       break;
     case 'framework':
@@ -45,7 +45,7 @@ function applyQuirk(state: GameState, eng: Engineer, arch: Archetype, ticket: Ti
         const m = state.modules.find((mod) => mod.id === ticket.moduleId)!;
         m.debt = clamp(m.debt + 15, 0, 100);
         ticket.progress = Math.max(0, ticket.progress - 3);
-        slack(state, '#dev-team', eng.name, `starting the framework migration in ${m.name}. no objections? great.`);
+        teamMessage(state, '#dev-team', eng.name, `starting the framework migration in ${m.name}. no objections? great.`);
       }
       break;
     case 'zealot':
@@ -53,7 +53,7 @@ function applyQuirk(state: GameState, eng: Engineer, arch: Archetype, ticket: Ti
         const m = state.modules.find((mod) => mod.id === ticket.moduleId)!;
         m.debt = clamp(m.debt - 10, 0, 100);
         ticket.progress = Math.max(0, ticket.progress - 3);
-        slack(state, '#dev-team', eng.name, `wrote 200 tests for ${m.name}. the feature is next sprint. forever.`);
+        teamMessage(state, '#dev-team', eng.name, `wrote 200 tests for ${m.name}. the feature is next sprint. forever.`);
       }
       break;
     case 'intern':
@@ -61,15 +61,15 @@ function applyQuirk(state: GameState, eng: Engineer, arch: Archetype, ticket: Ti
         const mentor = pick(state.engineers.filter((e) => e.id !== eng.id));
         if (mentor) mentor.morale = clamp(mentor.morale + 5, 0, 100);
         ticket.progress += 3;
-        slack(state, '#dev-team', eng.name, 'quick question: is this the file? (it is not. it is never the file.)');
+        teamMessage(state, '#dev-team', eng.name, 'quick question: is this the file? (it is not. it is never the file.)');
       } else {
-        slack(state, '#incidents', eng.name, 'I broke staging. I can fix it. probably.');
+        teamMessage(state, '#incidents', eng.name, 'I broke staging. I can fix it. probably.');
       }
       break;
     case 'vendor':
       state.budget -= 15;
       ticket.progress += 10;
-      slack(state, '#dev-team', eng.name, 'delivered ahead of schedule! (see attached invoice. net-15.)');
+      teamMessage(state, '#dev-team', eng.name, 'delivered ahead of schedule! (see attached invoice. net-15.)');
       log(state, `💍 ${eng.name} upsold the team. -$15k, but the work got done`, 'info');
       break;
     case 'security':
@@ -77,13 +77,13 @@ function applyQuirk(state: GameState, eng: Engineer, arch: Archetype, ticket: Ti
         const m = state.modules.find((mod) => mod.id === ticket.moduleId)!;
         m.health = clamp(m.health + 8, 0, 100);
         ticket.progress = Math.max(0, ticket.progress - 5);
-        slack(state, '#dev-team', eng.name, `blocked the deploy. 3 findings. 1 is cultural.`);
+        teamMessage(state, '#dev-team', eng.name, `blocked the deploy. 3 findings. 1 is cultural.`);
       }
       break;
     case 'devrel':
       state.budget += 25;
       for (const e of state.engineers) e.morale = clamp(e.morale + 5, 0, 100);
-      slack(state, '#announcements', eng.name, 'just closed a keynote slot! the demo will be real. eventually.');
+      teamMessage(state, '#announcements', eng.name, 'just closed a keynote slot! the demo will be real. eventually.');
       log(state, `🎤 ${eng.name} landed a conference slot. +$25k, morale up`, 'good');
       break;
   }
@@ -136,7 +136,7 @@ export function tickHour(state: GameState) {
           `🍝 Spaghetti cascade: ${eng.name}'s push in ${m.name} broke ${victim.name} (-${dmg})`,
           'chaos',
         );
-        slack(
+        teamMessage(
           state,
           '#incidents',
           eng.name,
@@ -146,7 +146,7 @@ export function tickHour(state: GameState) {
     } else {
       eng.status = 'slacking';
       if (chance(0.12)) {
-        eng.lastAction = `[SLACK] **${eng.name}**: ${pick(SLACK_IDLE)}`;
+        eng.lastAction = `[SLACK] **${eng.name}**: ${pick(TEAM_IDLE)}`;
       }
     }
   }
@@ -200,7 +200,7 @@ export function endOfDayDevelopers(state: GameState) {
     a.morale = clamp(a.morale - 5, 0, 100);
     b.morale = clamp(b.morale - 5, 0, 100);
     log(state, `⚔️ ${a.name} and ${b.name} are arguing in #dev-team`, 'chaos');
-    slack(state, '#dev-team', a.name, 'we need to talk about the architecture. again.');
-    slack(state, '#dev-team', b.name, 'I will not be reviewing another 4k-line diff.');
+    teamMessage(state, '#dev-team', a.name, 'we need to talk about the architecture. again.');
+    teamMessage(state, '#dev-team', b.name, 'I will not be reviewing another 4k-line diff.');
   }
 }

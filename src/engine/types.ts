@@ -64,7 +64,7 @@ export interface Module {
   debt: number; // 0-100
 }
 
-export interface SlackMessage {
+export interface TeamMessage {
   id: number;
   day: number;
   channel: string;
@@ -98,7 +98,7 @@ export interface GameState {
   engineers: Engineer[];
   tickets: Ticket[];
   modules: Module[];
-  slack: SlackMessage[];
+  teamMessages: TeamMessage[];
   log: LogEntry[];
   gameOver: GameOver;
   nextId: number;
