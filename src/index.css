@@ -5,8 +5,8 @@
   --font-display: "Orbitron", sans-serif;
 }
 
-/* Dark mode (default) */
-:root, :root[data-theme="dark"] {
+/* Normal (default) — current dark theme */
+:root, :root[data-theme="normal"] {
   --bg-primary: #09090b;
   --bg-secondary: #18181b;
   --bg-tertiary: #27272a;
@@ -15,24 +15,50 @@
   --text-primary: #e4e4e7;
   --text-secondary: #a1a1aa;
   --text-muted: #71717a;
+  --body-bg: #09090b;
+  --body-text: #e4e4e7;
 }
 
-/* Light mode */
+/* Dark — deeper blacks, higher contrast */
+:root[data-theme="dark"] {
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #141414;
+  --bg-card: #0d0d0d;
+  --border-color: #1a1a1a;
+  --text-primary: #ffffff;
+  --text-secondary: #d4d4d4;
+  --text-muted: #525252;
+  --body-bg: #000000;
+  --body-text: #ffffff;
+}
+
+/* Light — clean, bright, readable */
 :root[data-theme="light"] {
-  --bg-primary: #f4f4f5;
-  --bg-secondary: #e4e4e7;
-  --bg-tertiary: #d4d4d8;
+  --bg-primary: #fafafa;
+  --bg-secondary: #f4f4f5;
+  --bg-tertiary: #e4e4e7;
   --bg-card: #ffffff;
-  --border-color: #d4d4d8;
-  --text-primary: #18181b;
+  --border-color: #e4e4e7;
+  --text-primary: #09090b;
   --text-secondary: #52525b;
   --text-muted: #a1a1aa;
+  --body-bg: #fafafa;
+  --body-text: #09090b;
 }
 
 body {
-  @apply bg-zinc-950 text-zinc-200 antialiased;
+  background-color: var(--body-bg);
+  color: var(--body-text);
+  @apply antialiased;
 }
 
-[data-theme="light"] body {
-  @apply bg-zinc-100 text-zinc-900;
-}
+/* Utility classes that use CSS variables */
+.bg-primary { background-color: var(--bg-primary); }
+.bg-secondary { background-color: var(--bg-secondary); }
+.bg-tertiary { background-color: var(--bg-tertiary); }
+.bg-card { background-color: var(--bg-card); }
+.border-theme { border-color: var(--border-color); }
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }

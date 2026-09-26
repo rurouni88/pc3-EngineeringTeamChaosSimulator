@@ -1,6 +1,6 @@
 import type { GameState, Ticket, TicketType } from './types';
 import { TICKET_TEMPLATES } from './data';
-import { avgDebt, chance, clamp, log, moduleById, nextId, pick, rand, slack } from './util';
+import { avgDebt, chance, clamp, log, moduleById, nextId, pick, rand, slack, shuffle } from './util';
 
 const COWBOYS = ['rockstar', 'framework', 'grindset'];
 const PERFECTIONISTS = ['zealot', 'architect', 'zen'];
@@ -36,7 +36,10 @@ function triggerReviewTrap(state: GameState, t: Ticket) {
 
 export function makeTicket(state: GameState, type?: TicketType): Ticket {
   const tType: TicketType = type ?? pick<TicketType>(['feature', 'bug', 'epic']);
-  const tpl = pick(TICKET_TEMPLATES[tType]);
+  const usedTitles = new Set(state.tickets.map((t) => t.title));
+  const available = TICKET_TEMPLATES[tType].filter((t) => !usedTitles.has(t.title));
+  const pool = available.length > 0 ? available : TICKET_TEMPLATES[tType];
+  const tpl = pick(shuffle(pool));
   return {
     id: nextId(state),
     title: tpl.title,

@@ -1,10 +1,12 @@
-// SettingsModal — game preferences: Dark Mode, Save Scum, Audio, Volume.
+// SettingsModal — game preferences: Theme, Save Scum, Audio, Volume.
 // Inspired by pc3-DevLife's settings screen.
 
 import { useState, useEffect } from 'react';
 
+type Theme = 'normal' | 'dark' | 'light';
+
 interface Settings {
-  darkMode: boolean;
+  theme: Theme;
   saveScum: boolean;
   audioEnabled: boolean;
   volume: number;
@@ -13,10 +15,22 @@ interface Settings {
 const SETTINGS_KEY = 'etcs_settings';
 
 const DEFAULT_SETTINGS: Settings = {
-  darkMode: true,
+  theme: 'normal',
   saveScum: false,
   audioEnabled: false,
   volume: 50,
+};
+
+const THEME_LABELS: Record<Theme, string> = {
+  normal: 'Normal',
+  dark: 'Dark',
+  light: 'Light',
+};
+
+const THEME_HELP: Record<Theme, string> = {
+  normal: 'Default dark theme. Balanced contrast, easy on the eyes.',
+  dark: 'Deeper blacks, higher contrast. For the true night owls.',
+  light: 'Clean, bright theme. For when you need to see what you\'re doing.',
 };
 
 function loadSettings(): Settings {
@@ -40,17 +54,13 @@ function saveSettings(settings: Settings): void {
   }
 }
 
-function applyTheme(theme: 'dark' | 'light'): void {
+function applyTheme(theme: Theme): void {
   document.documentElement.setAttribute('data-theme', theme);
-  document.body.classList.toggle('bg-zinc-950', theme === 'dark');
-  document.body.classList.toggle('bg-zinc-100', theme === 'light');
-  document.body.classList.toggle('text-zinc-200', theme === 'dark');
-  document.body.classList.toggle('text-zinc-900', theme === 'light');
 }
 
 function ToggleSwitch({ checked, onChange, disabled }: { checked: boolean; onChange: () => void; disabled?: boolean }) {
   return (
-    <label className="relative inline-flex items-center cursor-not-allowed">
+    <label className="relative inline-flex items-center">
       <input
         type="checkbox"
         checked={checked}
@@ -106,7 +116,7 @@ function SettingRow({ label, help, children, disabled }: {
 export function SettingsModal({ onClose }: { onClose: () => void }) {
   const [settings, setSettings] = useState<Settings>(() => {
     const s = loadSettings();
-    applyTheme(s.darkMode ? 'dark' : 'light');
+    applyTheme(s.theme);
     return s;
   });
 
@@ -117,8 +127,8 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
   const update = <K extends keyof Settings>(key: K, value: Settings[K]) => {
     const next = { ...settings, [key]: value };
     setSettings(next);
-    if (key === 'darkMode') {
-      applyTheme(value ? 'dark' : 'light');
+    if (key === 'theme') {
+      applyTheme(value as Theme);
     }
   };
 
@@ -136,15 +146,26 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
 
         {/* Settings list */}
         <div className="space-y-0">
-          {/* Dark Mode */}
+          {/* Theme selector */}
           <SettingRow
-            label="Dark Mode"
-            help="Toggle dark mode. On by default — because productivity is overrated."
+            label="Theme"
+            help={THEME_HELP[settings.theme]}
           >
-            <ToggleSwitch
-              checked={settings.darkMode}
-              onChange={() => update('darkMode', !settings.darkMode)}
-            />
+            <div className="flex gap-1">
+              {(['normal', 'dark', 'light'] as Theme[]).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => update('theme', t)}
+                  className={`px-2.5 py-1 rounded text-[10px] border transition-colors ${
+                    settings.theme === t
+                      ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300'
+                      : 'border-slate-700 text-slate-500 hover:border-slate-600'
+                  }`}
+                >
+                  {THEME_LABELS[t]}
+                </button>
+              ))}
+            </div>
           </SettingRow>
 
           {/* Save Scum */}
