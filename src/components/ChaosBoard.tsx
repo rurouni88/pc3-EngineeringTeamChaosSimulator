@@ -102,7 +102,7 @@ export function ChaosBoard() {
   const debtColor = (v: number) => (v >= 50 ? 'bg-rose-500' : v >= 30 ? 'bg-amber-500' : 'bg-emerald-500');
 
   return (
-    <div className="w-full max-w-md bg-slate-900 border border-slate-700 rounded-lg p-3 font-mono text-xs h-52 flex flex-col" >
+    <div className="w-full max-w-md bg-slate-900 border border-slate-700 rounded-lg p-3 font-mono text-xs h-52 flex flex-col overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
