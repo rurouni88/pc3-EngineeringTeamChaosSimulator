@@ -152,8 +152,11 @@ export const ARCHETYPE_MAP: Record<string, Archetype> = Object.fromEntries(
 );
 
 export const NAMES = [
-  'Priya', 'Marcus', 'Yuki', 'Derek', 'Sofia', 'Tunde', 'Alex', 'Nina',
-  'Viktor', 'Hana', 'Omar', 'Jess', 'Chen', 'Ravi', 'Lena', 'Kofi',
+  'Aisha', 'Bjorn', 'Chiara', 'Dmitri', 'Elena', 'Felix', 'Gita', 'Hiroshi',
+  'Ingrid', 'Javier', 'Kwame', 'Lena', 'Miguel', 'Nadia', 'Oscar', 'Priya',
+  'Quinn', 'Ravi', 'Sofia', 'Takeshi', 'Uma', 'Viktor', 'Wang', 'Xia',
+  'Youssef', 'Zara', 'Amir', 'Bianca', 'Cedric', 'Dalia', 'Erik', 'Fatima',
+  'Giovanni', 'Hana', 'Ivan', 'Juna', 'Kai', 'Layla', 'Miro', 'Nour',
 ];
 
 export const MODULE_DEFS: Module[] = [
