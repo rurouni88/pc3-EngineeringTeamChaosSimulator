@@ -77,7 +77,7 @@ export function TeamsClone({ state }: { state: GameState }) {
       </div>
 
       {/* Burnout bar + Teams footer */}
-      <div className="border-t border-theme pt-3 mt-3">
+      <div className="border-t border-theme pt-2 mt-2 shrink-0">
         <div className="flex items-center justify-between mb-1">
           <span className="text-xs text-secondary">Team Burnout</span>
           <span className={`text-xs font-bold ${avgBurnout > 60 ? 'text-rose-400' : 'text-amber-400'}`}>

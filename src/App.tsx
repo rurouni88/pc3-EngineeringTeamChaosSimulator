@@ -177,7 +177,7 @@ export default function App() {
           onTabSelect={(id) => setTab(id as Tab)}
           onReorder={handleReorder}
         />
-        <div className="flex-1 min-h-0 px-2 pb-2 flex flex-col">
+        <div className="flex-1 min-h-0 px-2 pb-2 flex flex-col gap-2">
           {tab === 'board' && (
             <>
               <JiraBoard state={state} selected={selected} onAction={onAction} />

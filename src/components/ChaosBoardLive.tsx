@@ -25,7 +25,7 @@ export function ChaosBoardLive({ state }: { state: GameState }) {
   const stabColor = stab >= 60 ? 'bg-emerald-500' : stab >= 30 ? 'bg-amber-500' : 'bg-rose-500';
 
   return (
-    <div className="w-full bg-secondary border border-theme rounded-xl p-3 font-mono text-[10px]">
+    <div className="w-full bg-secondary border border-theme rounded-xl p-3 font-mono text-[10px] flex-1 min-h-0 overflow-y-auto">
       {/* Grafana header */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
