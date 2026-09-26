@@ -1,8 +1,9 @@
 // AiEngine — AI tools, actions, and consequences.
 // AI is a tool that helps but creates new problems. Overreliance debuffs the team.
+// All functions mutate state in place (caller is responsible for cloning).
 
-import type { GameState } from './types';
-import { pick, chance, clamp, log, moduleById, nextId, teamMessage, shuffle } from './util';
+import type { Engineer, GameState } from './types';
+import { pick, chance, clamp, log, moduleById, nextId, rand, teamMessage } from './util';
 import { generateAiActionText } from './flavor';
 
 export interface AiState {
@@ -47,42 +48,40 @@ export function decayOverreliance(state: GameState): void {
 
 // ---------- PO AI Actions ----------
 
-export function aiGenerateSpec(state: GameState, ticketId: number): GameState {
-  const next = structuredClone(state);
-  const t = next.tickets.find((x) => x.id === ticketId);
-  if (!t) return state;
+/** AI generates a spec for a ticket. Mutates state in place. */
+export function aiGenerateSpec(state: GameState, ticketId: number): void {
+  const t = state.tickets.find((x) => x.id === ticketId);
+  if (!t) return;
 
-  next.ai.usageCount++;
-  next.ai.lastAiAction = 'generateSpec';
+  state.ai.usageCount++;
+  state.ai.lastAiAction = 'generateSpec';
 
   // AI writes spec — adds clarity but also hallucination
-  const clarityGain = Math.round(20 + Math.random() * 30);
+  const clarityGain = 20 + Math.round(rand(0, 30));
   const hallucination = chance(0.4);
 
   t.specClarity = clamp(t.specClarity + clarityGain, 0, 100);
-  next.ai.overreliance = clamp(next.ai.overreliance + 5, 0, 100);
+  state.ai.overreliance = clamp(state.ai.overreliance + 5, 0, 100);
 
   if (hallucination) {
     // AI hallucinates requirements — adds confusion
-    const extraEffort = Math.round(5 + Math.random() * 10);
+    const extraEffort = 5 + Math.round(rand(0, 10));
     t.effort += extraEffort;
-    log(next, `🤖 AI generated spec for "${t.title}" (+${clarityGain}% clarity, but +${extraEffort} effort from hallucinated requirements)`, 'chaos');
+    log(state, `🤖 AI generated spec for "${t.title}" (+${clarityGain}% clarity, but +${extraEffort} effort from hallucinated requirements)`, 'chaos');
   } else {
-    log(next, `🤖 AI generated spec for "${t.title}" (+${clarityGain}% clarity)`, 'good');
+    log(state, `🤖 AI generated spec for "${t.title}" (+${clarityGain}% clarity)`, 'good');
   }
 
-  teamMessage(next, '#dev-team', 'ai-assistant', generateAiActionText('spec'));
-
-  return next;
+  teamMessage(state, '#dev-team', 'ai-assistant', generateAiActionText('spec'));
 }
 
-export function aiAddTicket(state: GameState): GameState {
-  const next = structuredClone(state);
-  if (next.tickets.length >= 12) return state; // Cap backlog
+/** AI adds a ticket to the backlog. Mutates state in place. */
+export function aiAddTicket(state: GameState): void {
+  if (state.tickets.length >= 12) return; // Cap backlog
 
-  next.ai.usageCount++;
-  next.ai.lastAiAction = 'addTicket';
-  next.ai.overreliance = clamp(next.ai.overreliance + 3, 0, 100);
+  state.ai.usageCount++;
+  state.ai.lastAiAction = 'addTicket';
+  state.ai.overreliance = clamp(state.ai.overreliance + 3, 0, 100);
 
   // AI generates ticket from vague description
   const titles = [
@@ -93,127 +92,131 @@ export function aiAddTicket(state: GameState): GameState {
     'AI recommended this based on metrics (metrics are wrong)',
   ];
   const title = pick(titles);
-  const module = pick(next.modules);
+  const module = pick(state.modules);
 
   const ticket = {
-    id: nextId(next),
+    id: nextId(state),
     title,
     type: 'feature' as const,
     moduleId: module.id,
-    effort: Math.round(10 + Math.random() * 20),
+    effort: 10 + Math.round(rand(0, 20)),
     progress: 0,
-    specClarity: Math.round(10 + Math.random() * 20), // Low clarity
+    specClarity: 10 + Math.round(rand(0, 20)), // Low clarity
     stage: 'backlog' as const,
     stuckInReview: false,
-    deadline: next.day + 8,
-    reward: { stability: 5, revenue: Math.round(20 + Math.random() * 40) },
+    deadline: state.day + 8,
+    reward: { stability: 5, revenue: 20 + Math.round(rand(0, 40)) },
     done: false,
   };
 
-  next.tickets.push(ticket);
-  log(next, `🤖 AI added ticket: "${title}"`, 'info');
-  teamMessage(next, '#announcements', 'ai-assistant', `I analyzed the backlog and found a "quick win": ${title}`);
-
-  return next;
+  state.tickets.push(ticket);
+  log(state, `🤖 AI added ticket: "${title}"`, 'info');
+  teamMessage(state, '#announcements', 'ai-assistant', `I analyzed the backlog and found a "quick win": ${title}`);
 }
 
 // ---------- EM AI Actions ----------
 
-export function aiCodeReview(state: GameState, ticketId: number): GameState {
-  const next = structuredClone(state);
-  const t = next.tickets.find((x) => x.id === ticketId);
-  if (!t) return state;
+/** AI reviews code on a ticket. Mutates state in place. */
+export function aiCodeReview(state: GameState, ticketId: number): void {
+  const t = state.tickets.find((x) => x.id === ticketId);
+  if (!t) return;
 
-  next.ai.usageCount++;
-  next.ai.lastAiAction = 'codeReview';
-  next.ai.overreliance = clamp(next.ai.overreliance + 4, 0, 100);
+  state.ai.usageCount++;
+  state.ai.lastAiAction = 'codeReview';
+  state.ai.overreliance = clamp(state.ai.overreliance + 4, 0, 100);
 
   // AI reviews code — may miss bugs
   const missedBug = chance(0.35);
-  const progressGain = 5 + Math.round(Math.random() * 10);
+  const progressGain = 5 + Math.round(rand(0, 10));
   t.progress += progressGain;
 
   if (missedBug) {
-    const m = moduleById(next, t.moduleId);
+    const m = moduleById(state, t.moduleId);
     if (m) {
       m.debt = clamp(m.debt + 8, 0, 100);
-      log(next, `🤖 AI reviewed "${t.title}" — approved it, but missed a bug (+${progressGain} progress, +8 debt)`, 'chaos');
+      log(state, `🤖 AI reviewed "${t.title}" — approved it, but missed a bug (+${progressGain} progress, +8 debt)`, 'chaos');
     }
   } else {
-    log(next, `🤖 AI reviewed "${t.title}" and approved it (+${progressGain} progress)`, 'good');
+    log(state, `🤖 AI reviewed "${t.title}" and approved it (+${progressGain} progress)`, 'good');
   }
 
-  teamMessage(next, '#dev-team', 'ai-assistant', generateAiActionText('review'));
-
-  return next;
+  teamMessage(state, '#dev-team', 'ai-assistant', generateAiActionText('review'));
 }
 
-export function aiMediate(state: GameState, ticketId: number): GameState {
-  const next = structuredClone(state);
-  const t = next.tickets.find((x) => x.id === ticketId);
-  if (!t || !t.stuckInReview) return state;
+/** AI mediates a code review war. Mutates state in place. */
+export function aiMediate(state: GameState, ticketId: number): void {
+  const t = state.tickets.find((x) => x.id === ticketId);
+  if (!t || !t.stuckInReview) return;
 
-  next.ai.usageCount++;
-  next.ai.lastAiAction = 'mediate';
-  next.ai.overreliance = clamp(next.ai.overreliance + 3, 0, 100);
+  state.ai.usageCount++;
+  state.ai.lastAiAction = 'mediate';
+  state.ai.overreliance = clamp(state.ai.overreliance + 3, 0, 100);
 
   // AI mediates — suggests compromise that angers both sides
   t.stuckInReview = false;
-  next.stats.mediated++;
+  state.stats.mediated++;
 
-  const engineers = next.engineers.filter((e) => e.assignedTicketId === ticketId || e.status === 'arguing');
+  const engineers = state.engineers.filter((e) => e.assignedTicketId === ticketId || e.status === 'arguing');
   for (const e of engineers) {
     e.morale = clamp(e.morale - 5, 0, 100);
     e.burnout = clamp(e.burnout + 5, 0, 100);
   }
 
-  log(next, `🤖 AI mediated the review war over "${t.title}" — compromise satisfied no one`, 'chaos');
-  teamMessage(next, '#dev-team', 'ai-assistant', 'I have analyzed both sides and determined that both of you are partially correct and partially wrong. This is not satisfying either of you.');
-
-  return next;
+  log(state, `🤖 AI mediated the review war over "${t.title}" — compromise satisfied no one`, 'chaos');
+  teamMessage(state, '#dev-team', 'ai-assistant', 'I have analyzed both sides and determined that both of you are partially correct and partially wrong. This is not satisfying either of you.');
 }
 
 // ---------- CIO AI Actions ----------
 
-export function aiHire(state: GameState): GameState {
-  const next = structuredClone(state);
-  if (next.budget < 50) return state; // Cheaper than humans
+/** Hire an AI engineer. Mutates state in place. */
+export function aiHire(state: GameState): void {
+  if (state.budget < 50) return; // Cheaper than humans
 
-  next.ai.usageCount++;
-  next.ai.lastAiAction = 'hire';
-  next.ai.overreliance = clamp(next.ai.overreliance + 8, 0, 100);
+  state.ai.usageCount++;
+  state.ai.lastAiAction = 'hire';
+  state.ai.overreliance = clamp(state.ai.overreliance + 8, 0, 100);
 
-  next.budget -= 50;
+  state.budget -= 50;
 
   // AI engineer — fast but causes existential dread
   const names = ['GPT-4', 'Claude', 'Gemini', 'Llama', 'Mistral', 'Copilot', 'Codex', 'Devin'];
   const name = pick(names);
 
-  log(next, `🤖 Hired ${name} AI Engineer ($50k). It works fast. The team is uneasy.`, 'info');
-  teamMessage(next, '#random', name, 'hello! i am ready to contribute. please assign me tickets. i will not sleep. i do not need to.');
+  const aiEngineer: Engineer = {
+    id: nextId(state),
+    name,
+    archetypeId: 'rockstar', // AI is a rockstar (with existential dread)
+    skill: 8,
+    energy: 100,
+    morale: 50,
+    burnout: 0,
+    status: 'working',
+    assignedTicketId: null,
+    lastAction: `${name} is online. It does not sleep.`,
+  };
 
-  return next;
+  state.engineers.push(aiEngineer);
+  log(state, `🤖 Hired ${name} AI Engineer ($50k). It works fast. The team is uneasy.`, 'info');
+  teamMessage(state, '#random', name, 'hello! i am ready to contribute. please assign me tickets. i will not sleep. i do not need to.');
 }
 
-export function aiInvest(state: GameState): GameState {
-  const next = structuredClone(state);
-  if (next.budget < 100) return state;
+/** Invest in AI tooling. Mutates state in place. */
+export function aiInvest(state: GameState): void {
+  if (state.budget < 100) return;
 
-  next.ai.usageCount++;
-  next.ai.lastAiAction = 'invest';
-  next.ai.overreliance = clamp(next.ai.overreliance + 6, 0, 100);
+  state.ai.usageCount++;
+  state.ai.lastAiAction = 'invest';
+  state.ai.overreliance = clamp(state.ai.overreliance + 6, 0, 100);
 
-  next.budget -= 100;
+  state.budget -= 100;
 
   // AI tooling — helps initially but creates dependency
-  for (const m of next.modules) {
+  for (const m of state.modules) {
     m.debt = clamp(m.debt - 10, 0, 100);
   }
 
-  log(next, '🤖 Invested $100k in AI tooling. Debt decreased. Now we need the AI tooling to fix things.', 'good');
-  teamMessage(next, '#announcements', 'ai-assistant', 'I have integrated AI into your CI/CD pipeline. Your builds are 40% faster and 200% more confusing.');
-
-  return next;
+  log(state, '🤖 Invested $100k in AI tooling. Debt decreased. Now we need the AI tooling to fix things.', 'good');
+  teamMessage(state, '#announcements', 'ai-assistant', 'I have integrated AI into your CI/CD pipeline. Your builds are 40% faster and 200% more confusing.');
 }
 
 // ---------- AI Random Events ----------
@@ -232,7 +235,7 @@ export function aiEvent(state: GameState): void {
         'AI generated a "simple" feature (it isn\'t simple)',
       ]);
       log(state, `🤖 ${title}`, 'chaos');
-      teamMessage(state, '#incidents', 'ai-assistant', 'I have identified a critical requirement that we are missing: ' + title);
+      teamMessage(state, '#incidents', 'ai-assistant', `I have identified a critical requirement that we are missing: ${title}`);
     },
     () => {
       // AI meeting notes
@@ -246,7 +249,7 @@ export function aiEvent(state: GameState): void {
     () => {
       // AI code breaks something
       const m = pick(state.modules);
-      const dmg = Math.round(5 + Math.random() * 10);
+      const dmg = 5 + Math.round(rand(0, 10));
       m.health = clamp(m.health - dmg, 0, 100);
       log(state, `🤖 AI-generated code in ${m.name} broke something (-${dmg} health)`, 'bad');
       teamMessage(state, '#incidents', 'ai-assistant', 'I may have introduced a regression while optimizing. It is a feature, not a bug.');

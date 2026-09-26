@@ -76,7 +76,7 @@ function ToggleSwitch({ checked, onChange, disabled }: { checked: boolean; onCha
             : 'bg-tertiary'
       } peer-focus:ring-2 peer-focus:ring-indigo-500/50`}>
         <div className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform mt-0.5 ${
-          checked ? 'translate-x-5.5 ml-0.5' : 'translate-x-0.5'
+          checked ? 'translate-x-[22px]' : 'translate-x-0.5'
         }`} />
       </div>
     </label>

@@ -60,7 +60,7 @@ export class SaveData {
           if (typeof stats[field] !== 'number') errors.push(`state.stats.${field} is not a number`);
         }
       }
-      for (const field of ['engineers', 'tickets', 'modules', 'slack', 'log']) {
+      for (const field of ['engineers', 'tickets', 'modules', 'teamMessages', 'log']) {
         if (!Array.isArray(state[field])) errors.push(`state.${field} is not an array`);
       }
       if (state.gameOver !== null && !['win', 'collapse', 'bankrupt'].includes(state.gameOver as string)) {

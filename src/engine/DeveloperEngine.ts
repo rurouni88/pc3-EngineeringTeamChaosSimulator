@@ -146,7 +146,7 @@ export function tickHour(state: GameState) {
     } else {
       eng.status = 'slacking';
       if (chance(0.12)) {
-        eng.lastAction = `[SLACK] **${eng.name}**: ${pick(TEAM_IDLE)}`;
+        eng.lastAction = `[TEAMS] **${eng.name}**: ${pick(TEAM_IDLE)}`;
       }
     }
   }
@@ -161,7 +161,7 @@ export function endOfDayDevelopers(state: GameState) {
       eng.status = 'on-leave';
       eng.energy = clamp(eng.energy + 25, 0, 100);
       eng.burnout = clamp(eng.burnout - 30, 0, 100);
-      eng.lastAction = `[SLACK] **${eng.name}**: I am out. the calendar blocks itself.`;
+      eng.lastAction = `[TEAMS] **${eng.name}**: I am out. the calendar blocks itself.`;
       log(state, `🏖️ ${eng.name} is burned out and on forced leave`, 'bad');
       continue;
     }
