@@ -18,17 +18,38 @@ import { GameOverScreen } from './components/GameOverScreen';
 
 type Tab = 'board' | 'team' | 'system' | 'slack';
 
-const TABS: { id: Tab; label: string }[] = [
+const DEFAULT_TABS: { id: Tab; label: string }[] = [
   { id: 'board', label: '🗂 JIRA' },
   { id: 'team', label: '👥 Team' },
   { id: 'system', label: '📊 Grafana' },
   { id: 'slack', label: '💬 Teams' },
 ];
 
+const TAB_ORDER_KEY = 'etcs_tab_order';
+
+function loadTabOrder(): Tab[] {
+  try {
+    const raw = localStorage.getItem(TAB_ORDER_KEY);
+    if (raw) return JSON.parse(raw) as Tab[];
+  } catch {
+    // ignore
+  }
+  return DEFAULT_TABS.map((t) => t.id);
+}
+
+function saveTabOrder(order: Tab[]): void {
+  try {
+    localStorage.setItem(TAB_ORDER_KEY, JSON.stringify(order));
+  } catch {
+    // ignore
+  }
+}
+
 export default function App() {
   const [state, setState] = useState<GameState | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
   const [paused, setPaused] = useState(false);
+  const [tabOrder, setTabOrder] = useState<Tab[]>(loadTabOrder);
   const [tab, setTab] = useState<Tab>('board');
   const [hasSave, setHasSave] = useState(() => SaveSystem.hasSave());
   const [newAchievements, setNewAchievements] = useState<Achievement[]>([]);
@@ -98,6 +119,15 @@ export default function App() {
     setTab('board');
   };
 
+  const moveTab = (index: number, direction: -1 | 1) => {
+    const next = [...tabOrder];
+    const target = index + direction;
+    if (target < 0 || target >= next.length) return;
+    [next[index], next[target]] = [next[target], next[index]];
+    setTabOrder(next);
+    saveTabOrder(next);
+  };
+
   const onAction = (fn: (s: GameState) => GameState) => {
     setState((cur) => (cur ? fn(cur) : cur));
   };
@@ -145,19 +175,40 @@ export default function App() {
       {/* MOBILE: one panel at a time, switched via tabs */}
       <div className="lg:hidden flex-1 min-h-0 flex flex-col">
         <div className="flex gap-1 p-2">
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className={`flex-1 px-2 py-1.5 rounded-lg text-xs border ${
-                tab === t.id
-                  ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300'
-                  : 'border-slate-800 text-slate-500'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
+          {tabOrder.map((id, i) => {
+            const t = DEFAULT_TABS.find((tb) => tb.id === id);
+            if (!t) return null;
+            return (
+              <div key={id} className="flex-1 flex flex-col">
+                <button
+                  onClick={() => setTab(id)}
+                  className={`flex-1 px-2 py-1.5 rounded-lg text-xs border ${
+                    tab === id
+                      ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300'
+                      : 'border-slate-800 text-slate-500'
+                  }`}
+                >
+                  {t.label}
+                </button>
+                <div className="flex gap-0.5 mt-0.5">
+                  <button
+                    onClick={() => moveTab(i, -1)}
+                    disabled={i === 0}
+                    className="flex-1 py-0.5 rounded text-[9px] bg-slate-800/50 text-slate-600 disabled:opacity-30 hover:bg-slate-700"
+                  >
+                    ▲
+                  </button>
+                  <button
+                    onClick={() => moveTab(i, 1)}
+                    disabled={i === tabOrder.length - 1}
+                    className="flex-1 py-0.5 rounded text-[9px] bg-slate-800/50 text-slate-600 disabled:opacity-30 hover:bg-slate-700"
+                  >
+                    ▼
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
         <div className="flex-1 min-h-0 px-2 pb-2 flex flex-col">
           {tab === 'board' && (
