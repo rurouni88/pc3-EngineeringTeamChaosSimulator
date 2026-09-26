@@ -2,6 +2,7 @@
 
 @theme {
   --font-mono: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+  --font-display: "Orbitron", sans-serif;
 }
 
 body {

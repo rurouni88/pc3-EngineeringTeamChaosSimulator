@@ -41,24 +41,23 @@ export function Tooltip({
     setPosition({ x: e.clientX, y: e.clientY });
   };
 
-  const trigger = cloneElement(children, {
+  const triggerProps = {
     onMouseEnter: () => {
       show();
-      children.props.onMouseEnter?.();
     },
     onMouseMove: (e: React.MouseEvent) => {
       handleMouseMove(e);
-      children.props.onMouseMove?.(e);
     },
     onMouseLeave: () => {
       hide();
-      children.props.onMouseLeave?.();
     },
     onFocus: show,
     onBlur: hide,
-    role: 'button',
-    tabIndex: children.props.tabIndex ?? 0,
-  });
+    role: 'button' as const,
+    tabIndex: 0,
+  };
+
+  const trigger = cloneElement(children, triggerProps);
 
   if (!visible || !position) return trigger;
 
