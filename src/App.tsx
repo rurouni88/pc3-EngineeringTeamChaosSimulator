@@ -15,6 +15,7 @@ import { SlackClone } from './components/SlackClone';
 import { OpsLog } from './components/OpsLog';
 import { StartScreen } from './components/StartScreen';
 import { GameOverScreen } from './components/GameOverScreen';
+import { ReorderableTabs } from './components/ReorderableTabs';
 
 type Tab = 'board' | 'team' | 'system' | 'slack';
 
@@ -119,13 +120,9 @@ export default function App() {
     setTab('board');
   };
 
-  const moveTab = (index: number, direction: -1 | 1) => {
-    const next = [...tabOrder];
-    const target = index + direction;
-    if (target < 0 || target >= next.length) return;
-    [next[index], next[target]] = [next[target], next[index]];
-    setTabOrder(next);
-    saveTabOrder(next);
+  const handleReorder = (order: string[]) => {
+    setTabOrder(order as Tab[]);
+    saveTabOrder(order as Tab[]);
   };
 
   const onAction = (fn: (s: GameState) => GameState) => {
@@ -174,42 +171,12 @@ export default function App() {
 
       {/* MOBILE: one panel at a time, switched via tabs */}
       <div className="lg:hidden flex-1 min-h-0 flex flex-col">
-        <div className="flex gap-1 p-2">
-          {tabOrder.map((id, i) => {
-            const t = DEFAULT_TABS.find((tb) => tb.id === id);
-            if (!t) return null;
-            return (
-              <div key={id} className="flex-1 flex flex-col">
-                <button
-                  onClick={() => setTab(id)}
-                  className={`flex-1 px-2 py-1.5 rounded-lg text-xs border ${
-                    tab === id
-                      ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300'
-                      : 'border-slate-800 text-slate-500'
-                  }`}
-                >
-                  {t.label}
-                </button>
-                <div className="flex gap-0.5 mt-0.5">
-                  <button
-                    onClick={() => moveTab(i, -1)}
-                    disabled={i === 0}
-                    className="flex-1 py-0.5 rounded text-[9px] bg-slate-800/50 text-slate-600 disabled:opacity-30 hover:bg-slate-700"
-                  >
-                    ▲
-                  </button>
-                  <button
-                    onClick={() => moveTab(i, 1)}
-                    disabled={i === tabOrder.length - 1}
-                    className="flex-1 py-0.5 rounded text-[9px] bg-slate-800/50 text-slate-600 disabled:opacity-30 hover:bg-slate-700"
-                  >
-                    ▼
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <ReorderableTabs
+          tabs={tabOrder.map((id) => DEFAULT_TABS.find((t) => t.id === id)!)}
+          activeTab={tab}
+          onTabSelect={(id) => setTab(id as Tab)}
+          onReorder={handleReorder}
+        />
         <div className="flex-1 min-h-0 px-2 pb-2 flex flex-col">
           {tab === 'board' && (
             <>
