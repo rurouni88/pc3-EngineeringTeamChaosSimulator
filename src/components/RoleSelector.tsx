@@ -1,7 +1,7 @@
-// RoleSelector — swipeable carousel on mobile, side-by-side cards on desktop.
-// Pure React + CSS transforms. No carousel library needed.
+// RoleSelector — swipeable/draggable carousel. Works with touch (mobile)
+// and mouse drag (desktop). Arrow buttons for accessibility.
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import type { Role } from '../engine/types';
 
 interface RoleInfo {
@@ -112,27 +112,32 @@ export function RoleSelector({ onStart }: { onStart: (role: Role) => void }) {
   const [index, setIndex] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
   const [dragging, setDragging] = useState(false);
-  const touchStartX = useRef(0);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const startX = useRef(0);
+  const isDown = useRef(false);
+  const moved = useRef(false);
 
   const SWIPE_THRESHOLD = 50;
 
+  // --- Touch handlers (mobile) ---
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
+    startX.current = e.touches[0].clientX;
+    isDown.current = true;
+    moved.current = false;
     setDragging(true);
   }, []);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!dragging) return;
-    const dx = e.touches[0].clientX - touchStartX.current;
-    // Rubber-band at edges
+    if (!isDown.current) return;
+    const dx = e.touches[0].clientX - startX.current;
+    if (Math.abs(dx) > 5) moved.current = true;
     const atStart = index === 0 && dx > 0;
     const atEnd = index === ROLES.length - 1 && dx < 0;
     setDragOffset(atStart || atEnd ? dx * 0.3 : dx);
-  }, [dragging, index]);
+  }, [index]);
 
   const handleTouchEnd = useCallback(() => {
-    if (!dragging) return;
+    if (!isDown.current) return;
+    isDown.current = false;
     const dx = dragOffset;
     setDragOffset(0);
     setDragging(false);
@@ -142,19 +147,85 @@ export function RoleSelector({ onStart }: { onStart: (role: Role) => void }) {
     } else if (dx > SWIPE_THRESHOLD && index > 0) {
       setIndex(index - 1);
     }
+  }, [dragOffset, index]);
+
+  // --- Mouse handlers (desktop) ---
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    startX.current = e.clientX;
+    isDown.current = true;
+    moved.current = false;
+    setDragging(true);
+  }, []);
+
+  useEffect(() => {
+    if (!dragging) return;
+
+    const onMove = (e: MouseEvent) => {
+      if (!isDown.current) return;
+      const dx = e.clientX - startX.current;
+      if (Math.abs(dx) > 5) moved.current = true;
+      const atStart = index === 0 && dx > 0;
+      const atEnd = index === ROLES.length - 1 && dx < 0;
+      setDragOffset(atStart || atEnd ? dx * 0.3 : dx);
+    };
+
+    const onUp = () => {
+      if (!isDown.current) return;
+      isDown.current = false;
+      const dx = dragOffset;
+      setDragOffset(0);
+      setDragging(false);
+
+      if (dx < -SWIPE_THRESHOLD && index < ROLES.length - 1) {
+        setIndex(index + 1);
+      } else if (dx > SWIPE_THRESHOLD && index > 0) {
+        setIndex(index - 1);
+      }
+    };
+
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
   }, [dragging, dragOffset, index]);
 
-  // Desktop: show all cards side by side
+  // Prevent click-through after drag
+  const handleCardClick = useCallback((e: React.MouseEvent) => {
+    if (moved.current) {
+      e.preventDefault();
+      e.stopPropagation();
+      moved.current = false;
+    }
+  }, []);
+
+  const prev = () => setIndex((i) => Math.max(0, i - 1));
+  const next = () => setIndex((i) => Math.min(ROLES.length - 1, i + 1));
+
   return (
     <div className="w-full max-w-md">
-      {/* Mobile: swipeable carousel */}
-      <div className="lg:hidden">
+      {/* Carousel with arrows */}
+      <div className="relative">
+        {/* Left arrow */}
+        {index > 0 && (
+          <button
+            onClick={prev}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-secondary/90 border border-theme flex items-center justify-center text-secondary hover:text-primary hover:border-indigo-500/50 transition-colors"
+            aria-label="Previous role"
+          >
+            ‹
+          </button>
+        )}
+
+        {/* Carousel viewport */}
         <div
-          ref={containerRef}
-          className="overflow-hidden touch-pan-y"
+          className="overflow-hidden touch-pan-y cursor-grab active:cursor-grabbing select-none"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+          onClick={handleCardClick}
         >
           <div
             className="flex transition-transform duration-300 ease-out"
@@ -171,25 +242,29 @@ export function RoleSelector({ onStart }: { onStart: (role: Role) => void }) {
           </div>
         </div>
 
-        {/* Dot indicators */}
-        <div className="flex justify-center gap-2 mt-3">
-          {ROLES.map((r, i) => (
-            <button
-              key={r.id}
-              onClick={() => setIndex(i)}
-              className={`w-2 h-2 rounded-full transition-all ${
-                i === index ? `${COLOR_MAP[r.color].dot} scale-125` : 'bg-tertiary'
-              }`}
-              aria-label={`Go to ${r.title}`}
-            />
-          ))}
-        </div>
+        {/* Right arrow */}
+        {index < ROLES.length - 1 && (
+          <button
+            onClick={next}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-secondary/90 border border-theme flex items-center justify-center text-secondary hover:text-primary hover:border-indigo-500/50 transition-colors"
+            aria-label="Next role"
+          >
+            ›
+          </button>
+        )}
       </div>
 
-      {/* Desktop: all cards side by side */}
-      <div className="hidden lg:grid grid-cols-3 gap-3">
-        {ROLES.map((r) => (
-          <RoleCard key={r.id} role={r} onStart={() => onStart(r.id)} />
+      {/* Dot indicators */}
+      <div className="flex justify-center gap-2 mt-3">
+        {ROLES.map((r, i) => (
+          <button
+            key={r.id}
+            onClick={() => setIndex(i)}
+            className={`w-2 h-2 rounded-full transition-all ${
+              i === index ? `${COLOR_MAP[r.color].dot} scale-125` : 'bg-tertiary'
+            }`}
+            aria-label={`Go to ${r.title}`}
+          />
         ))}
       </div>
     </div>

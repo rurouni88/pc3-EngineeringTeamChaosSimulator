@@ -1,12 +1,80 @@
-// OptionsModal — settings, stats, and management options on the title screen.
-// Tabbed interface: Settings | Statistics | Reset.
+// OptionsModal — game settings, stats, and reset on the title screen.
+// Settings are shown inline (no extra click-through).
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MetaStore } from '../engine/meta';
 import { saveUnlocked } from '../engine/achievements';
-import { SettingsModal } from './SettingsModal';
 
 type Tab = 'settings' | 'stats' | 'reset';
+type Theme = 'normal' | 'dark' | 'light';
+
+interface Settings {
+  theme: Theme;
+  saveScum: boolean;
+  audioEnabled: boolean;
+  volume: number;
+}
+
+const SETTINGS_KEY = 'etcs_settings';
+
+const DEFAULT_SETTINGS: Settings = {
+  theme: 'normal',
+  saveScum: false,
+  audioEnabled: false,
+  volume: 50,
+};
+
+const THEME_LABELS: Record<Theme, string> = {
+  normal: 'Normal',
+  dark: 'Dark',
+  light: 'Light',
+};
+
+function loadSettings(): Settings {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<Settings>;
+      return { ...DEFAULT_SETTINGS, ...parsed };
+    }
+  } catch {
+    // Corrupted — use defaults.
+  }
+  return { ...DEFAULT_SETTINGS };
+}
+
+function saveSettings(settings: Settings): void {
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  } catch {
+    // Storage full — silently fail.
+  }
+}
+
+function applyTheme(theme: Theme): void {
+  document.documentElement.setAttribute('data-theme', theme);
+}
+
+function ToggleSwitch({ checked, onChange, disabled }: { checked: boolean; onChange: () => void; disabled?: boolean }) {
+  return (
+    <label className="relative inline-flex items-center cursor-pointer">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+        disabled={disabled}
+        className="sr-only peer"
+      />
+      <div className={`w-10 h-5 rounded-full transition-colors ${
+        disabled ? 'bg-tertiary' : checked ? 'bg-indigo-500' : 'bg-tertiary'
+      } peer-focus:ring-2 peer-focus:ring-indigo-500/50`}>
+        <div className={`w-4 h-4 bg-white rounded-full shadow transform transition-transform ${
+          checked ? 'translate-x-[22px]' : 'translate-x-0.5'
+        }`} />
+      </div>
+    </label>
+  );
+}
 
 export function OptionsModal({
   onClose,
@@ -16,8 +84,24 @@ export function OptionsModal({
   onResetMeta: () => void;
 }) {
   const [activeTab, setActiveTab] = useState<Tab>('settings');
-  const [showSettings, setShowSettings] = useState(false);
+  const [settings, setSettings] = useState<Settings>(() => {
+    const s = loadSettings();
+    applyTheme(s.theme);
+    return s;
+  });
   const meta = MetaStore.load();
+
+  useEffect(() => {
+    saveSettings(settings);
+  }, [settings]);
+
+  const update = <K extends keyof Settings>(key: K, value: Settings[K]) => {
+    setSettings((prev) => {
+      const next = { ...prev, [key]: value };
+      if (key === 'theme') applyTheme(value as Theme);
+      return next;
+    });
+  };
 
   const handleResetMeta = () => {
     if (window.confirm('Reset all lifetime statistics and achievements? This cannot be undone.')) {
@@ -35,7 +119,7 @@ export function OptionsModal({
 
   const tabs: { id: Tab; label: string; icon: string }[] = [
     { id: 'settings', label: 'Settings', icon: '⚙️' },
-    { id: 'stats', label: 'Statistics', icon: '📊' },
+    { id: 'stats', label: 'Stats', icon: '📊' },
     { id: 'reset', label: 'Reset', icon: '🗑️' },
   ];
 
@@ -68,17 +152,67 @@ export function OptionsModal({
           ))}
         </div>
 
-        {/* Settings Tab */}
+        {/* Settings Tab — inline, no sub-modal */}
         {activeTab === 'settings' && (
-          <div className="space-y-2">
-            <button
-              onClick={() => setShowSettings(true)}
-              className="w-full px-3 py-2.5 rounded-lg bg-tertiary border border-theme text-secondary text-xs hover:border-indigo-500/50 hover:text-indigo-400 transition-colors text-left"
-            >
-              🎮 Game Settings (Dark Mode, Save Scum, Audio)
-            </button>
-            <div className="text-[10px] text-muted text-center py-2">
-              Audio coming soon — your ears will thank you.
+          <div className="space-y-1">
+            {/* Theme */}
+            <div className="flex items-center justify-between py-2.5 border-b border-theme">
+              <span className="text-xs text-secondary">Theme</span>
+              <div className="flex gap-1">
+                {(['normal', 'dark', 'light'] as Theme[]).map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => update('theme', t)}
+                    className={`px-2.5 py-1 rounded text-[10px] border transition-colors ${
+                      settings.theme === t
+                        ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300'
+                        : 'border-theme text-muted hover:border-theme'
+                    }`}
+                  >
+                    {THEME_LABELS[t]}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Save Scum */}
+            <div className="flex items-center justify-between py-2.5 border-b border-theme">
+              <div>
+                <span className="text-xs text-secondary">Save Scum</span>
+                <div className="text-[9px] text-muted">Save mid-run. One life isn't enough.</div>
+              </div>
+              <ToggleSwitch
+                checked={settings.saveScum}
+                onChange={() => update('saveScum', !settings.saveScum)}
+              />
+            </div>
+
+            {/* Audio (disabled) */}
+            <div className="flex items-center justify-between py-2.5 border-b border-theme opacity-50">
+              <div>
+                <span className="text-xs text-secondary">Audio</span>
+                <div className="text-[9px] text-muted">Coming soon</div>
+              </div>
+              <ToggleSwitch checked={settings.audioEnabled} onChange={() => {}} disabled />
+            </div>
+
+            {/* Volume (disabled) */}
+            <div className="flex items-center justify-between py-2.5 opacity-50">
+              <div>
+                <span className="text-xs text-secondary">Volume</span>
+                <div className="text-[9px] text-muted">Coming soon</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={settings.volume}
+                  disabled
+                  className="w-20 h-1 bg-tertiary rounded-full appearance-none cursor-not-allowed"
+                />
+                <span className="text-[10px] text-muted font-mono w-7 text-right">{settings.volume}%</span>
+              </div>
             </div>
           </div>
         )}
@@ -128,9 +262,6 @@ export function OptionsModal({
           </div>
         )}
       </div>
-
-      {/* Settings sub-modal */}
-      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
     </div>
   );
 }
