@@ -21,7 +21,7 @@ type Tab = 'board' | 'team' | 'system' | 'slack';
 
 const DEFAULT_TABS: { id: Tab; label: string }[] = [
   { id: 'board', label: '🗂 JIRA' },
-  { id: 'team', label: '👥 Team' },
+  { id: 'team', label: '👥 Roster' },
   { id: 'system', label: '📊 Grafana' },
   { id: 'slack', label: '💬 Teams' },
 ];
