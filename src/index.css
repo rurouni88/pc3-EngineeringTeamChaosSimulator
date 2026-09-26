@@ -35,16 +35,16 @@
 
 /* Light — clean, bright, readable */
 :root[data-theme="light"] {
-  --bg-primary: #fafafa;
-  --bg-secondary: #f4f4f5;
-  --bg-tertiary: #e4e4e7;
+  --bg-primary: #f8f8f8;
+  --bg-secondary: #f0f0f0;
+  --bg-tertiary: #e5e5e5;
   --bg-card: #ffffff;
-  --border-color: #e4e4e7;
-  --text-primary: #09090b;
-  --text-secondary: #52525b;
-  --text-muted: #a1a1aa;
-  --body-bg: #fafafa;
-  --body-text: #09090b;
+  --border-color: #d4d4d4;
+  --text-primary: #1a1a1a;
+  --text-secondary: #404040;
+  --text-muted: #6b6b6b;
+  --body-bg: #f8f8f8;
+  --body-text: #1a1a1a;
 }
 
 body {
