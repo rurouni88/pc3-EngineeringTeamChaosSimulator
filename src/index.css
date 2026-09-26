@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@theme {
+  --font-mono: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+}
+
+body {
+  @apply bg-zinc-950 text-zinc-200 antialiased;
+}

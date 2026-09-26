@@ -1,0 +1,8 @@
+# GitHub Pages cache policy (ported from d20().devLife).
+# Vite emits hashed filenames, so the entry HTML is the only thing that
+# must always revalidate; assets are safe to cache but we revalidate them
+# too so a deploy always wins.
+/
+  Cache-Control: no-cache
+/assets/*
+  Cache-Control: no-cache
