@@ -102,7 +102,7 @@ export function ChaosBoard() {
   const debtColor = (v: number) => (v >= 50 ? 'bg-rose-500' : v >= 30 ? 'bg-amber-500' : 'bg-emerald-500');
 
   return (
-    <div className="w-full max-w-md bg-slate-900 border border-slate-700 rounded-lg p-3 font-mono text-xs">
+    <div className="w-full max-w-md bg-slate-900 border border-slate-700 rounded-lg p-3 font-mono text-xs h-52 flex flex-col" >
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
@@ -162,9 +162,9 @@ export function ChaosBoard() {
       </div>
 
       {/* Chaos events feed */}
-      <div className="border-t border-slate-700 pt-1.5">
+      <div className="border-t border-slate-700 pt-1.5 flex-1 min-h-0 flex flex-col">
         <div className="text-[9px] text-slate-500 mb-0.5">EVENTS</div>
-        <div className="space-y-0.5 max-h-12 overflow-hidden">
+        <div className="space-y-0.5 overflow-y-auto flex-1 min-h-0">
           {events.map((e, i) => (
             <div
               key={i}

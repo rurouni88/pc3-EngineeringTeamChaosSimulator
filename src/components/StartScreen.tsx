@@ -8,28 +8,29 @@ import { Leaderboard } from './Leaderboard';
 import { AchievementModal } from './AchievementModal';
 import { HelpModal } from './HelpModal';
 import { OptionsModal } from './OptionsModal';
+import { RoleCard } from './RoleCard';
 
 const ROLES: { id: Role; title: string; desc: string; tools: string; emoji: string }[] = [
   {
     id: 'PO',
     title: 'Product Owner',
     emoji: '📋',
-    desc: 'You write the specs. Vague specs produce vague, broken outcomes.',
+    desc: 'Write specs. Vague specs = broken outcomes.',
     tools: 'Write Specs · Add Tickets · Cut Scope',
   },
   {
     id: 'EM',
-    title: 'Engineering Manager',
+    title: 'Eng Manager',
     emoji: '🧯',
-    desc: 'You are the buffer between the chaos and the humans. Mediate wars, enforce guidelines.',
+    desc: 'Buffer between chaos and humans. Mediate wars.',
     tools: '1:1s · Code Reviews · Mediate · Guidelines',
   },
   {
     id: 'CIO',
     title: 'CIO',
     emoji: '💼',
-    desc: 'You manage the money and the people who manage the people. OKRs on by default.',
-    tools: 'Hire · Fire · Invest in Infra · Cut Scope',
+    desc: 'Manage money and people. OKRs on by default.',
+    tools: 'Hire · Fire · Invest · Cut Scope',
   },
 ];
 
@@ -60,9 +61,12 @@ export function StartScreen({
   return (
     <div className="h-dvh overflow-y-auto flex flex-col items-center justify-center gap-3 sm:gap-5 p-3 sm:p-8">
       <div className="text-center">
-        <h1 className="text-4xl sm:text-5xl font-bold text-cyan-400 tracking-widest">ETCS</h1>
-        <p className="text-slate-400 text-xs sm:text-base mt-1 sm:mt-2">
+        <h1 className="text-4xl sm:text-5xl font-black text-cyan-400 tracking-widest font-display">ETCS</h1>
+        <p className="text-slate-400 text-xs sm:text-base mt-1 sm:mt-2 font-display tracking-wider">
           Engineering Team Chaos Simulator
+        </p>
+        <p className="text-rose-500/80 text-[10px] sm:text-xs mt-2 italic">
+          Because every quarter is a bloodbath — you just manage the casualties better.
         </p>
       </div>
 
@@ -169,6 +173,13 @@ export function StartScreen({
           Lose: stability hits 0, or the budget dies. Win: survive day 30 with 50%+ stability.
         </p>
       </div>
+
+      {/* Modals */}
+      {activeModal === 'achievements' && <AchievementModal onClose={() => setActiveModal(null)} />}
+      {activeModal === 'help' && <HelpModal onClose={() => setActiveModal(null)} />}
+      {activeModal === 'options' && <OptionsModal onClose={() => setActiveModal(null)} onResetMeta={() => {
+        MetaStore.save({ totalRuns: 0, wins: 0, losses: 0, bestStability: 0, lastRunDate: '', topRuns: [] });
+      }} />}
     </div>
   );
 }

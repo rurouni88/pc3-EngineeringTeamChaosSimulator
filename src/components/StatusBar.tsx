@@ -30,7 +30,7 @@ export function StatusBar({ state, onAction, paused, onTogglePause }: Props) {
 
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-3 py-2 border-b border-slate-800 bg-slate-900/80 text-sm">
-      <div className="font-bold text-cyan-400 tracking-widest">ETCS</div>
+      <div className="font-black text-cyan-400 tracking-widest font-display">ETCS</div>
       <div className="text-slate-400">
         Day <span className="text-slate-100">{Math.min(state.day, 30)}</span>/30 · {clock}
       </div>
