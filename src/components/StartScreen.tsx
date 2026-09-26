@@ -10,6 +10,39 @@ import { OptionsModal } from './OptionsModal';
 import { LeaderboardModal } from './LeaderboardModal';
 import { RoleSelector } from './RoleSelector';
 
+const TAGLINES = [
+  'Because every quarter is a bloodbath — you just manage the casualties better.',
+  'Where tech debt goes to compound interest.',
+  'Predictable chaos. Unpredictable deadlines.',
+  'Your team is one merge conflict away from a breakdown.',
+  'Shipping features since the last sprint retro.',
+  'Because "it works on my machine" is not a strategy.',
+  'Management: where hope meets reality, and reality wins.',
+  'The only thing more unstable than your codebase is your team morale.',
+  'Because every architecture decision is just a future regret waiting to happen.',
+  'Where standup meetings could have been calendar invites.',
+  'Deploying on Friday is a lifestyle. Living it.',
+  'Your backlog is a lie. Your deadlines are a joke. Your code is a crime scene.',
+  'Because the customer always wants the button purple.',
+  'Where CI/CD stands for "Continuous Incompetence and Deferring Deployment".',
+  'The simuation is not real. The burnout is.',
+  'Where "quick fix" means "technical debt with a deadline".',
+  'Because every epic story is just a feature that gave up on itself.',
+  'Where the monolith is not a choice, it is a hostage situation.',
+  'Because the on-call rotation is just a fancy word for "your life".',
+  'Where code reviews are just performance art for people who hate shipping.',
+];
+
+function pickTagline(seed: string): string {
+  if (seed.length === 0) return TAGLINES[0];
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+    hash |= 0;
+  }
+  return TAGLINES[Math.abs(hash) % TAGLINES.length];
+}
+
 
 
 const SEED_RE = /^[A-Z0-9]{8}$/;
@@ -24,6 +57,7 @@ export function StartScreen({
   hasSave: boolean;
 }) {
   const [seed, setSeed] = useState<string>(() => RngEngine.generateSeed());
+  const tagline = pickTagline(seed);
   const [editing, setEditing] = useState(false);
   const [activeModal, setActiveModal] = useState<'achievements' | 'help' | 'options' | 'leaderboard' | null>(null);
 
@@ -44,7 +78,7 @@ export function StartScreen({
           Engineering Team Chaos Simulator
         </p>
         <p className="text-rose-500/80 text-[10px] sm:text-xs mt-2 italic">
-          Because every quarter is a bloodbath — you just manage the casualties better.
+          {tagline}
         </p>
       </div>
 
