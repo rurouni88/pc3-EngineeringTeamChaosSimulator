@@ -17,13 +17,13 @@ import { StartScreen } from './components/StartScreen';
 import { GameOverScreen } from './components/GameOverScreen';
 import { ReorderableTabs } from './components/ReorderableTabs';
 
-type Tab = 'board' | 'team' | 'system' | 'slack';
+type Tab = 'board' | 'team' | 'system' | 'teams';
 
 const DEFAULT_TABS: { id: Tab; label: string }[] = [
   { id: 'board', label: '🗂 JIRA' },
   { id: 'team', label: '👥 Roster' },
   { id: 'system', label: '📊 Grafana' },
-  { id: 'slack', label: '💬 Teams' },
+  { id: 'teams', label: '💬 Teams' },
 ];
 
 const TAB_ORDER_KEY = 'etcs_tab_order';
@@ -193,7 +193,7 @@ export default function App() {
             />
           )}
           {tab === 'system' && <ChaosBoardLive state={state} />}
-          {tab === 'slack' && <TeamsClone state={state} />}
+          {tab === 'teams' && <TeamsClone state={state} />}
         </div>
       </div>
 
