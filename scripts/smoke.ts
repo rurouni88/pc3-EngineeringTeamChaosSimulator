@@ -48,7 +48,7 @@ function play(role: 'PO' | 'EM' | 'CIO', label: string) {
   }
   const shipped = s.log.filter((l) => l.text.includes('shipped')).length;
   console.log(
-    `${label}: ended=${s.gameOver} day=${s.day} stab=${stability(s)} budget=$${s.budget}k team=${s.engineers.length} shipped=${shipped} slackMsgs=${s.slack.length}`,
+    `${label}: ended=${s.gameOver} day=${s.day} stab=${stability(s)} budget=$${s.budget}k team=${s.engineers.length} shipped=${shipped} teamMsgs=${s.teamMessages.length}`,
   );
 }
 
