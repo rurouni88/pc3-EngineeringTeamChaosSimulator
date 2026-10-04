@@ -12,3 +12,5 @@ tsconfig.tsbuildinfo
 # OS
 .DS_Store
 Thumbs.db
+PC3_ARCHIECTURE_GUARDRAILS.md
+PC3_AGENT.md
